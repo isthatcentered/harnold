@@ -17,9 +17,10 @@ interface DeviceProps extends device
 	src: string
 }
 
+
 function Device( { label, width, height, src }: DeviceProps )
 {
-	return <figure key={label}>
+	return <figure className="Device">
 		{/* https://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/ */}
 		<iframe
 			sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
