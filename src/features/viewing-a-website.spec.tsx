@@ -1,16 +1,45 @@
-import { default as React, ReactElement } from "react"
+import { default as React, IframeHTMLAttributes, ReactElement } from "react"
 import { createHistory, createMemorySource, History, LocationProvider, LocationProviderProps } from "@reach/router"
 import { mount, ReactWrapper } from "enzyme"
 import { parse } from "query-string"
 import App from "../App"
+import { tick } from "@isthatcentered/tickable"
 
 
 
 
-describe( `Displays playground`, () => {
-	test( `Works`, () => {
-		const { wrapper } = routerMount( "/playground", <App/> )
-		expect( wrapper ).toHaveText( /playground/i )
+describe( `No website given in query`, () => {
+	test( `User is redirected to home`, async () => {
+		const { wrapper, navigate } = routerMount( "/playground?__EMPTY__", <App/> )
+		
+		await tick()
+		
+		expect( navigate ).toHaveBeenCalledWith( "/", undefined )
+	} )
+} )
+
+describe( `"url" given in query`, () => {
+	
+	test( `User is not redirected`, async () => {
+		const { wrapper, navigate } = routerMount( "/playground?url=SOME_URL.COM", <App/> )
+		
+		await tick()
+		
+		expect( navigate ).not.toHaveBeenCalled()
+	} )
+	
+	test( `Each iframe is set to display the website`, () => {
+		const { wrapper, navigate, query } = routerMount( "/playground?url=URL_FROM_QUERY.com", <App/> )
+		
+		wrapper
+			.find( "iframe" )
+			.map( ( iframe: ReactWrapper<IframeHTMLAttributes<HTMLIFrameElement>> ) =>
+				iframe.props() )
+			.forEach( ( props: IframeHTMLAttributes<HTMLIFrameElement> ) =>
+				expect( props.src ).toBe( query.url ),
+			)
+		
+		expect.hasAssertions()
 	} )
 } )
 

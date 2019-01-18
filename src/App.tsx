@@ -1,38 +1,59 @@
 import React, { Component } from "react"
 import "./App.css"
-import { RouteComponentProps, Router } from "@reach/router"
+import { Link, RouteComponentProps, Router } from "@reach/router"
+import { parse } from "query-string"
 
 
 
 
-export interface PlaygroundPageState
+export interface HomePageProps extends RouteComponentProps
 {
+
 }
+
+
+export function HomePage( props: HomePageProps )
+{
+	
+	return (
+		<div className="HomePage">
+			HomePage
+			<Link to="/playground">broken playground</Link>
+			<Link to="/playground?url=https://reactjs.org">Working playground</Link>
+		</div>
+	)
+}
+
 
 export interface PlaygroundPageProps extends RouteComponentProps
 {
 }
 
-export class PlaygroundPage extends Component<PlaygroundPageProps, PlaygroundPageState>
+
+export function PlaygroundPage( { location, navigate }: PlaygroundPageProps )
 {
+	const { url } = parse( location!.search ) as Partial<{ [ key: string ]: string }>
 	
-	static defaultProps = {}
+	if ( !url )
+		ensureRouterHasSubscribedToLocationThen( () => navigate!( "/" ) )
 	
-	state = {}
-	
-	
-	render()
-	{
-		const {} = this.state,
-		      {} = this.props
-		
-		return (
-			<div className="PlaygroundPage">
-				PlaygroundPage
-			</div>
-		)
-	}
+	return (
+		<div className="PlaygroundPage">
+			PlaygroundPage
+			<iframe
+				src={url}
+			/>
+			<Link to="/">Home</Link>
+		</div>
+	)
 }
+
+
+function ensureRouterHasSubscribedToLocationThen( callback: Function )
+{
+	process.nextTick( () => callback() )
+}
+
 
 class App extends Component
 {
@@ -41,6 +62,7 @@ class App extends Component
 		return (
 			<div className="App">
 				<Router>
+					<HomePage path="/"/>
 					<PlaygroundPage path="/playground"/>
 				</Router>
 			</div>
