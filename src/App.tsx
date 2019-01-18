@@ -1,7 +1,8 @@
-import React, { Component } from "react"
+import React from "react"
 import "./App.css"
 import { Link, RouteComponentProps, Router } from "@reach/router"
 import { parse } from "query-string"
+import { device } from "./contracts"
 
 
 
@@ -27,29 +28,40 @@ export function HomePage( props: HomePageProps )
 
 export interface PlaygroundPageProps extends RouteComponentProps
 {
+	devices: device[]
 }
 
 
-export function PlaygroundPage( { location, navigate }: PlaygroundPageProps )
+export function PlaygroundPage( { location, navigate, devices }: PlaygroundPageProps )
 {
 	const { url } = parse( location!.search ) as Partial<{ [ key: string ]: string }>
 	
-	if ( !url )
+	if ( !url ) {
 		ensureRouterHasSubscribedToLocationThen( () => navigate!( "/" ) )
+		return null
+	}
 	
 	return (
 		<div className="PlaygroundPage">
-			PlaygroundPage
 			
-			{/* https://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/ */}
-			<iframe
-				sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-				src={url}
-			/>
-			<Link to="/">Home</Link>
+			{devices.map( ( { width, height, label }: device ) =>
+				<figure key={label}>
+					{/* https://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/ */}
+					<iframe
+						sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+						width={width}
+						height={height}
+						src={url}
+					/>
+					<figcaption>{label}</figcaption>
+				</figure>,
+			)}
+			
+			<Link to="/">Go to home</Link>
 		</div>
 	)
 }
+
 
 
 function ensureRouterHasSubscribedToLocationThen( callback: Function )
@@ -58,19 +70,24 @@ function ensureRouterHasSubscribedToLocationThen( callback: Function )
 }
 
 
-class App extends Component
+export interface AppProps
 {
-	render()
-	{
-		return (
-			<div className="App">
-				<Router>
-					<HomePage path="/"/>
-					<PlaygroundPage path="/playground"/>
-				</Router>
-			</div>
-		)
-	}
+	devices: device[]
 }
 
-export default App
+
+export function App( { devices }: AppProps )
+{
+	
+	return (
+		<div className="App">
+			<Router>
+				<HomePage path="/"/>
+				<PlaygroundPage
+					devices={devices}
+					path="/playground"
+				/>
+			</Router>
+		</div>
+	)
+}
