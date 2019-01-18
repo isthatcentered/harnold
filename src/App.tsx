@@ -40,7 +40,10 @@ export function PlaygroundPage( { location, navigate }: PlaygroundPageProps )
 	return (
 		<div className="PlaygroundPage">
 			PlaygroundPage
+			
+			{/* https://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/ */}
 			<iframe
+				sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
 				src={url}
 			/>
 			<Link to="/">Home</Link>
