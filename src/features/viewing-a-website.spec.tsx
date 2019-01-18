@@ -18,8 +18,8 @@ describe( `No website given in query`, () => {
 	} )
 } )
 
+
 describe( `"url" given in query`, () => {
-	
 	test( `User is not redirected`, async () => {
 		const { wrapper, navigate } = routerMount( "/playground?url=SOME_URL.COM", <App/> )
 		
@@ -28,16 +28,13 @@ describe( `"url" given in query`, () => {
 		expect( navigate ).not.toHaveBeenCalled()
 	} )
 	
-	test( `Each iframe is set to display the website`, () => {
+	test( `Each device is set to display the website`, async () => {
 		const { wrapper, navigate, query } = routerMount( "/playground?url=URL_FROM_QUERY.com", <App/> )
 		
-		wrapper
-			.find( "iframe" )
-			.map( ( iframe: ReactWrapper<IframeHTMLAttributes<HTMLIFrameElement>> ) =>
-				iframe.props() )
-			.forEach( ( props: IframeHTMLAttributes<HTMLIFrameElement> ) =>
-				expect( props.src ).toBe( query.url ),
-			)
+		await tick()
+		
+		getDisplayedDevices( wrapper )
+			.forEach( props => expect( props.src ).toBe( query.url ) )
 		
 		expect.hasAssertions()
 	} )
@@ -72,6 +69,20 @@ function routerMount( url: string, Component: ReactElement<any> ): {
 		query: parse( query ) as any,
 		navigate,
 	}
+}
+
+
+function getDisplayedDevices( wrapper: ReactWrapper<LocationProviderProps> )
+{
+	const iframes = wrapper
+		.find( "iframe" )
+	
+	if ( !iframes.exists() )
+		throw new Error( `☺️ Sorry, I found no <iframe> in the dom` )
+	
+	return iframes
+		.map( ( iframe: ReactWrapper<IframeHTMLAttributes<HTMLIFrameElement>> ) =>
+			iframe.props() )
 }
 
 
