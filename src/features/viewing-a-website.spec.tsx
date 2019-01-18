@@ -10,6 +10,12 @@ import { pack } from "@isthatcentered/charlies-factory"
 
 
 
+const makeApp = makeMakeRoutableComponent<AppProps>( App, {
+		devices: pack( 3, () => makeDevice() ),
+	},
+)
+
+
 describe( `No website given in query`, () => {
 	test( `User is redirected to home`, async () => {
 		const { wrapper, navigate } = makeApp( "/playground?__EMPTY__" )
@@ -36,18 +42,7 @@ describe( `"url" given in query`, () => {
 		
 		await tick()
 		
-		devices.forEach( device => {
-			const match = wrapper
-				.find( "iframe" )
-				.filterWhere( ( node: ReactWrapper<IframeHTMLAttributes<HTMLIFrameElement>> ) => {
-					const { width, height } = node.props()
-					return device.height === height && device.width === width
-				} )
-			
-			expect( match.length ).toBe( 1 )
-			expect( wrapper ).toHaveText( device.label )
-		} )
-		
+		expectPageToContainDevicesMatching( devices, wrapper )
 		
 		expect.hasAssertions()
 	} )
@@ -57,8 +52,7 @@ describe( `"url" given in query`, () => {
 		
 		await tick()
 		
-		getDisplayedDevices( wrapper )
-			.forEach( props => expect( props.src ).toBe( query.url ) )
+		expectDisplayedDevicesToHaveSource( query.url!, wrapper )
 		
 		expect.hasAssertions()
 	} )
@@ -66,18 +60,21 @@ describe( `"url" given in query`, () => {
 
 
 
-function makeApp( url: string, props: Partial<AppProps> = {} ): AppProps & RouterMountProps
+function makeMakeRoutableComponent<Props>( Component: Function, defaultProps: Props ): ( url: string, props?: Partial<Props> ) => Props & RouterMountProps
 {
-	const _props: AppProps = {
-		devices: pack( 4, () => makeDevice() ),
-		...props,
+	return ( url: string, props: Partial<Props> = {} ) => {
+		
+		const _props: Props = {
+			...defaultProps,
+			...props,
+		}
+		
+		return {
+			..._props,
+			... routerMount( url, <Component {..._props}/> ),
+		}
 	}
-	
-	return {
-		..._props,
-		...routerMount( url, <App {..._props}/> ),
-	}
-} // @todo: makeRoutableComponent<T>(component): (url: string, props: T) => RW<T>
+}
 
 
 export interface RouterMountProps
@@ -115,37 +112,47 @@ export function routerMount( url: string, Component: ReactElement<any> ): Router
 }
 
 
-function getDisplayedDevices( wrapper: ReactWrapper<LocationProviderProps> )
+function expectDisplayedDevicesToHaveSource( source: string, wrapper: ReactWrapper<any> )
 {
-	const iframes = wrapper
+	getDevices( wrapper ).forEach( device =>
+		expect( device.props().src ).toBe( source ) )
+}
+
+
+function expectPageToContainDevicesMatching( devices: device[], wrapper: ReactWrapper<any> )
+{
+	devices.forEach( device => {
+		const match = findDeviceMatching( device, wrapper )
+		
+		expect( match.exists() ).toBe( true )
+		
+		expect( wrapper ).toHaveText( device.label )
+	} )
+}
+
+
+function getDevices( wrapper: ReactWrapper<any> ): ReactWrapper<IframeHTMLAttributes<HTMLIFrameElement>>
+{
+	const devices = wrapper
 		.find( "iframe" )
 	
-	if ( !iframes.exists() )
+	if ( !devices.exists() )
 		throw new Error( `☺️ Sorry, I found no <iframe> in the dom` )
 	
-	return iframes
-		.map( ( iframe: ReactWrapper<IframeHTMLAttributes<HTMLIFrameElement>> ) =>
-			iframe.props() )
+	return devices
 }
 
 
-/*
-function makeApp( { url, navigate = jest.fn() }: { url: string } & Partial<History> ): void
+function findDeviceMatching( device: device, wrapper: ReactWrapper<any> ): ReactWrapper<IframeHTMLAttributes<HTMLIFrameElement>>
 {
-	const [ path, search ] = url.split( "?" )
+	const match = getDevices( wrapper )
+		.filterWhere( node => {
+			const { width, height } = node.props()
+			return device.height === height && device.width === width
+		} )
 	
-	const history: History = {
-		...createHistory( createMemorySource( url ) ),
-		navigate: navigate,
-	}
+	if ( !match.exists() )
+		throw new Error( `☺️ Couldn't find any device matching "{width: ${device.width}, height: ${device.height}, label: ${device.label} }" in dom` )
 	
-	history.location.search = search
-	
-	WRAPPER = mount(
-		<LocationProvider history={history}>
-			<Root/>
-		</LocationProvider> )
-	
-	PROPS = WRAPPER.props()
+	return match
 }
-*/
