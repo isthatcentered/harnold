@@ -1,5 +1,6 @@
-import { IframeHTMLAttributes } from "react"
 import * as React from "react"
+import { IframeHTMLAttributes } from "react"
+
 
 
 
@@ -14,6 +15,9 @@ export interface ScalableIframeProps extends IframeHTMLAttributes<HTMLIFrameElem
 
 export function ScalableIframe( { scale = 1, width, height, ...props }: ScalableIframeProps )
 {
+	if ( scale > 2 || scale < 0 )
+		throw new Error( `ScalableIframe expects a value between 0 and 2` )
+	
 	const scaledWidth  = width * scale,
 	      scaledHeight = height * scale
 	

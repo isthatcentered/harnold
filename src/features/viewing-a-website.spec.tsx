@@ -67,15 +67,13 @@ describe( `Scaling the view`, () => {
 		
 		change( /scale the devices up or down/i, newScale, wrapper )
 		
-		
 		expectDisplayedDevicesToBeAtScale( newScale, wrapper )
-		
 		
 		expect.hasAssertions()
 	} )
 	
 	test( `View scale is backed up on refresh`, () => {
-	
+		fail()
 	} )
 } )
 

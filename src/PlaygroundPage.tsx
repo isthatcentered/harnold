@@ -2,8 +2,9 @@ import { Link, RouteComponentProps } from "@reach/router"
 import { device } from "./contracts"
 import { parse } from "query-string"
 import * as React from "react"
-import { ChangeEvent, HTMLAttributes, useState } from "react"
+import { useState } from "react"
 import { ScalableIframe } from "./ScalableIFrame"
+import { ViewScaler } from "./ViewScaler"
 
 
 
@@ -28,7 +29,7 @@ export function PlaygroundPage( { location, navigate, devices }: PlaygroundPageP
 	return (
 		<div className="PlaygroundPage">
 			
-			<ViewScale
+			<ViewScaler
 				value={scale}
 				onScale={scale => setScale( scale )}
 			/>
@@ -50,37 +51,6 @@ export function PlaygroundPage( { location, navigate, devices }: PlaygroundPageP
 function ensureRouterHasSubscribedToLocationThen( callback: Function )
 {
 	process.nextTick( () => callback() )
-}
-
-
-
-export interface ViewScaleProps extends HTMLAttributes<HTMLDivElement>
-{
-	onScale: ( scale: number ) => any
-	value: number
-}
-
-
-export function ViewScale( { value, onScale }: ViewScaleProps )
-{
-	const asCssScale     = ( value: string ): number => parseInt( value ) / 100,
-	      asPercentScale = ( scale: number ): number => scale * 100,
-	      setScale       = ( e: ChangeEvent<HTMLInputElement> ) => onScale( asCssScale( e.target.value ) )
-	
-	return (
-		<div className="ViewScale">
-			<label>
-				Scale the devices up or down
-				<input
-					type="range"
-					min={30}
-					max={100}
-					value={asPercentScale( value )}
-					onChange={setScale}
-				/>
-			</label>
-		</div>
-	)
 }
 
 

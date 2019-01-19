@@ -32,6 +32,7 @@ describe( `<ScalableIframe/>`, () => {
 			wrapper = shallow( <ScalableIframe {...spec} src=""/> )
 			wrapperStyles = wrapper.props().style!
 		} )
+		
 		describe( `Given {width: ${spec.width} height: ${spec.height} scale: ${spec.scale}}`, () => {
 			
 			test( `Passes desired width and height to iframe element`, () => {
@@ -54,7 +55,27 @@ describe( `<ScalableIframe/>`, () => {
 				
 				expect( wrapperStyles.height ).toBe( scaledHeight )
 			} )
+			
+			
 		} )
+		
+	} )
+	
+	describe( `Throws if passed value is not a css transform:scale compatible value`, () => {
+		;[
+			-1, 3,
+		]
+			.forEach( scale =>
+				test( `Throws for value ${scale}`, () => {
+					expect( () => shallow(
+						<ScalableIframe
+							scale={scale}
+							width={0}
+							height={0}
+							src=""
+						/> ) )
+						.toThrow( /ScalableIframe expects a value between 0 and 2/i )
+				} ) )
 	} )
 } )
 
