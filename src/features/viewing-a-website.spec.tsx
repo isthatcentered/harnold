@@ -72,8 +72,33 @@ describe( `Scaling the view`, () => {
 		expect.hasAssertions()
 	} )
 	
-	test( `View scale is backed up on refresh`, () => {
-		fail()
+	test( `View scale is backed up on refresh`, async () => {
+		const oldScale: number = .3,
+		      newScale: number = 70,
+		      storingKey       = "harnold:playground:scale"
+		
+		
+		const getSpy = jest.spyOn( Object.getPrototypeOf( window.localStorage ), "getItem" )
+			.mockReturnValue( oldScale )
+		
+		const setSpy = jest.spyOn( Object.getPrototypeOf( window.localStorage ), "setItem" )
+		
+		const { wrapper, navigate, query } = makeApp( "/playground?url=URL_FROM_QUERY.com" )
+		
+		await tick()
+		
+		expect( window.localStorage.getItem ).toHaveBeenCalledWith( storingKey )
+		
+		expectDisplayedDevicesToBeAtScale( oldScale * 100, wrapper )
+		
+		change( /scale the devices up or down/i, newScale, wrapper )
+		
+		expect( window.localStorage.setItem ).toHaveBeenCalledWith( storingKey, (newScale / 100).toString() )
+		
+		expect.hasAssertions()
+		
+		getSpy.mockRestore()
+		setSpy.mockRestore()
 	} )
 } )
 

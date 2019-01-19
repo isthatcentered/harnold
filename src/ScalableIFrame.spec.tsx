@@ -55,10 +55,7 @@ describe( `<ScalableIframe/>`, () => {
 				
 				expect( wrapperStyles.height ).toBe( scaledHeight )
 			} )
-			
-			
 		} )
-		
 	} )
 	
 	describe( `Throws if passed value is not a css transform:scale compatible value`, () => {

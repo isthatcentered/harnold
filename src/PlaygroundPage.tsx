@@ -24,14 +24,21 @@ export function PlaygroundPage( { location, navigate, devices }: PlaygroundPageP
 		return null
 	}
 	
-	const [ scale, setScale ] = useState( 1 )
+	const [ scale, setScale ] = useState(
+		Number( window.localStorage.getItem( "harnold:playground:scale" ) || "1" ),
+	)
 	
 	return (
 		<div className="PlaygroundPage">
 			
 			<ViewScaler
 				value={scale}
-				onScale={scale => setScale( scale )}
+				onScale={scale => {
+					
+					window.localStorage.setItem( "harnold:playground:scale", scale.toString() )
+					
+					setScale( scale )
+				}}
 			/>
 			
 			{devices.map( ( device: device ) =>
