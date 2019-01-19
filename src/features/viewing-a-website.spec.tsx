@@ -61,7 +61,7 @@ describe( `"url" given in query`, () => {
 describe( `Scaling the view`, () => {
 	test( `Modifying the "view scale" scales the devices`, async () => {
 		const { wrapper, navigate, query } = makeApp( "/playground?url=URL_FROM_QUERY.com" ),
-		      newScale: number             = 40
+		      newScale: number             = .4
 		
 		await tick()
 		
@@ -74,7 +74,7 @@ describe( `Scaling the view`, () => {
 	
 	test( `View scale is backed up on refresh`, async () => {
 		const oldScale: number = .3,
-		      newScale: number = 70,
+		      newScale: number = .7,
 		      storingKey       = "harnold:playground:scale"
 		
 		
@@ -89,11 +89,11 @@ describe( `Scaling the view`, () => {
 		
 		expect( window.localStorage.getItem ).toHaveBeenCalledWith( storingKey )
 		
-		expectDisplayedDevicesToBeAtScale( oldScale * 100, wrapper )
+		expectDisplayedDevicesToBeAtScale( oldScale, wrapper )
 		
 		change( /scale the devices up or down/i, newScale, wrapper )
 		
-		expect( window.localStorage.setItem ).toHaveBeenCalledWith( storingKey, (newScale / 100).toString() )
+		expect( window.localStorage.setItem ).toHaveBeenCalledWith( storingKey, newScale.toString() )
 		
 		expect.hasAssertions()
 		
@@ -192,7 +192,7 @@ function expectPageToContainDevicesMatching( devices: device[], wrapper: ReactWr
 }
 
 
-function expectDisplayedDevicesToBeAtScale( newScale: number, wrapper: ReactWrapper<any> )
+function expectDisplayedDevicesToBeAtScale( scale: number, wrapper: ReactWrapper<any> )
 {
 	const devices = getDevices( wrapper )
 	
@@ -201,7 +201,7 @@ function expectDisplayedDevicesToBeAtScale( newScale: number, wrapper: ReactWrap
 			
 			expect( scalerComponent.exists() ).toBe( true )
 			
-			expect( scalerComponent.props().scale ).toBe( newScale / 100 )
+			expect( scalerComponent.props().scale ).toBe( scale )
 		},
 	)
 	
