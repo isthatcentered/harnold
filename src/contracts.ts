@@ -11,7 +11,7 @@ export interface device
 }
 
 export const makeDevice = factory<device>( ( faker, index ) => ({
-	width:  `Device ${index} width` as any as number, // for easy test debugging
-	height: `Device ${index} height` as any as number, // for easy test debugging
+	width:  faker.random.number(),
+	height: faker.random.number(),
 	label:  `Device ${index} label`,
 }) )

@@ -1,11 +1,12 @@
-import { default as React, IframeHTMLAttributes, ReactElement } from "react"
+import { ComponentClass, default as React, IframeHTMLAttributes, ReactElement, StatelessComponent } from "react"
 import { createHistory, createMemorySource, History, LocationProvider, LocationProviderProps } from "@reach/router"
-import { mount, ReactWrapper } from "enzyme"
+import { EnzymePropSelector, mount, ReactWrapper } from "enzyme"
 import { parse } from "query-string"
 import { tick } from "@isthatcentered/tickable"
 import { App, AppProps } from "../App"
 import { device, makeDevice } from "../contracts"
 import { pack } from "@isthatcentered/charlies-factory"
+import { ScalableIframe } from "../ScalableIFrame"
 
 
 
@@ -25,7 +26,6 @@ describe( `No website given in query`, () => {
 		expect( navigate ).toHaveBeenCalledWith( "/", undefined )
 	} )
 } )
-
 
 describe( `"url" given in query`, () => {
 	test( `User is not redirected`, async () => {
@@ -58,6 +58,32 @@ describe( `"url" given in query`, () => {
 	} )
 } )
 
+describe( `Scaling the view`, () => {
+	test( `Modifying the scale scales the devices`, async () => {
+		const { wrapper, navigate, query } = makeApp( "/playground?url=URL_FROM_QUERY.com" ),
+		      newScale: number             = 40
+		
+		await tick()
+		
+		getByText( /scale the devices up or down/i, "label", wrapper )
+			.find( `input[type="range"]` )
+			.simulate( "change", { target: { value: newScale } } )
+		
+		const devices = getDevices( wrapper )
+		
+		devices
+			.forEach( device => {
+					const scalerComponent = device.closest( ScalableIframe )
+					expect( scalerComponent.exists() ).toBe( true )
+					expect( scalerComponent.props().scale ).toBe( newScale / 100 )
+				},
+			)
+		// expectDisplayedDevicesToBeAtScale( scale )
+		
+		
+		expect.hasAssertions()
+	} )
+} )
 
 
 function makeMakeRoutableComponent<Props>( Component: Function, defaultProps: Props ): ( url: string, props?: Partial<Props> ) => Props & RouterMountProps
@@ -155,4 +181,16 @@ function findDeviceMatching( device: device, wrapper: ReactWrapper<any> ): React
 		throw new Error( `☺️ Couldn't find any device matching "{width: ${device.width}, height: ${device.height}, label: ${device.label} }" in dom` )
 	
 	return match
+}
+
+
+
+export type findable<P> = ComponentClass<P> | StatelessComponent<P> | EnzymePropSelector | string
+
+
+export function getByText<P>( text: RegExp, component: findable<P>, wrapper: ReactWrapper<any> ): ReactWrapper<P | any>
+{
+	return wrapper
+		.find( component as any )
+		.filterWhere( node => node.text().match( text ) !== null )
 }
