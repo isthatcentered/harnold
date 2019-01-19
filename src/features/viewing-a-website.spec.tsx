@@ -1,4 +1,4 @@
-import { ComponentClass, default as React, IframeHTMLAttributes, ReactElement, StatelessComponent } from "react"
+import { ComponentClass, default as React, IframeHTMLAttributes, InputHTMLAttributes, ReactElement, StatelessComponent } from "react"
 import { createHistory, createMemorySource, History, LocationProvider, LocationProviderProps } from "@reach/router"
 import { EnzymePropSelector, mount, ReactWrapper } from "enzyme"
 import { parse } from "query-string"
@@ -59,29 +59,23 @@ describe( `"url" given in query`, () => {
 } )
 
 describe( `Scaling the view`, () => {
-	test( `Modifying the scale scales the devices`, async () => {
+	test( `Modifying the "view scale" scales the devices`, async () => {
 		const { wrapper, navigate, query } = makeApp( "/playground?url=URL_FROM_QUERY.com" ),
 		      newScale: number             = 40
 		
 		await tick()
 		
-		getByText( /scale the devices up or down/i, "label", wrapper )
-			.find( `input[type="range"]` )
-			.simulate( "change", { target: { value: newScale } } )
+		change( /scale the devices up or down/i, newScale, wrapper )
 		
-		const devices = getDevices( wrapper )
 		
-		devices
-			.forEach( device => {
-					const scalerComponent = device.closest( ScalableIframe )
-					expect( scalerComponent.exists() ).toBe( true )
-					expect( scalerComponent.props().scale ).toBe( newScale / 100 )
-				},
-			)
-		// expectDisplayedDevicesToBeAtScale( scale )
+		expectDisplayedDevicesToBeAtScale( newScale, wrapper )
 		
 		
 		expect.hasAssertions()
+	} )
+	
+	test( `View scale is backed up on refresh`, () => {
+	
 	} )
 } )
 
@@ -100,6 +94,24 @@ function makeMakeRoutableComponent<Props>( Component: Function, defaultProps: Pr
 			... routerMount( url, <Component {..._props}/> ),
 		}
 	}
+}
+
+
+function change( element: RegExp, value: any, wrapper: ReactWrapper<any> ): ReactWrapper<InputHTMLAttributes<HTMLInputElement>>
+{
+	const match = wrapper
+		.find( "input" )
+		.filterWhere( node => (node.closest( "label" ).text() || "").match( element ) !== null )
+	
+	if ( !match.exists() )
+		throw new Error( `☺️ Sorry, found no input identifiable via text ${element}` )
+	
+	if ( typeof match.props().onChange !== "function" )
+		throw new Error( `You provided no "onChange" prop for input ${element}. I think you might want to though 🙄` )
+	
+	match.simulate( "change", { target: { value } } )
+	
+	return match
 }
 
 
@@ -154,6 +166,23 @@ function expectPageToContainDevicesMatching( devices: device[], wrapper: ReactWr
 		
 		expect( wrapper ).toHaveText( device.label )
 	} )
+}
+
+
+function expectDisplayedDevicesToBeAtScale( newScale: number, wrapper: ReactWrapper<any> )
+{
+	const devices = getDevices( wrapper )
+	
+	devices.forEach( device => {
+			const scalerComponent = device.closest( ScalableIframe )
+			
+			expect( scalerComponent.exists() ).toBe( true )
+			
+			expect( scalerComponent.props().scale ).toBe( newScale / 100 )
+		},
+	)
+	
+	expect.hasAssertions()
 }
 
 
