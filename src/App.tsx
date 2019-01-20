@@ -26,6 +26,7 @@ function Logo( { className = "", style = {}, ...props }: HTMLAttributes<HTMLDivE
 				height:     "48px",
 				textAlign:  "center",
 				lineHeight: "48px",
+				textShadow: "3px 2px #7F2CCB",
 			}}>
 			H
 		</i>
@@ -48,19 +49,33 @@ export function App( { devices }: AppProps )
 				<Logo/>
 			</header>
 			
-			<div className="d-flex flex-row align-items-start">
-				<div className="pl-7">
-				
-				</div>
-				<main className="_slate-1 flex-grow-1 p-5 _rounded">
-					<Router>
-						<HomePage path="/"/>
-						<PlaygroundPage
-							devices={devices}
-							path="/playground"
-						/>
-					</Router>
-				</main>
-			</div>
+			
+			<main className="pl-7">
+				<Router>
+					<HomePage path="/"/>
+					<PlaygroundPage
+						devices={devices}
+						path="/playground"
+						className="p-6"
+					/>
+				</Router>
+			</main>
+			
+			{/*<div className="d-flex flex-row align-items-start">*/}
+			{/*<nav className="pl-7"*/}
+			{/*style={{ width: "48px" }}>*/}
+			{/**/}
+			{/*</nav>*/}
+			{/*<main*/}
+			{/*className="flex-grow-1 p-5 d-flex align-items-center"*/}
+			{/*style={{*/}
+			{/*minHeight:           "calc(100vh - 48px)",*/}
+			{/*width:               "calc(100vw - 48px)",*/}
+			{/*borderTopLeftRadius: "4px",*/}
+			{/*}}*/}
+			{/*>*/}
+			{/**/}
+			{/*</main>*/}
+			{/*</div>*/}
 		</div>)
 }

@@ -11,10 +11,13 @@ $medium-spring-green: #00F0B5;
 
 $font-sizes: 12px, 14px, 16px, 18px, 20px, 24px, 30px, 36px, 48px, 60px, 72px;
 $slates: #01111b, mix(#10212d, #0C1B27, 60), #15232f;
+//$slates: #01111b, #E1E9EE, #15232f;
+
 //$slates: #0F0F0F, #2D2D2D; // grayscale
 //$slates: $rich-black, $dark-gunmetal; // purpled
 
 $primary: $tiffany-blue;
+$secondary: $dark-orchid;
 $border-radius: 4px;
 $body-bg: nth($slates, 1);
 $body-color: #AEB6BE;
@@ -109,4 +112,123 @@ html {
 	border: 1px solid rgba(black, .1);
 }
 
+iframe {
+	background:    white;
+	border:        none;
+	border-radius: 4px;
+}
+
+._lighted {
+	$primary-lightened: lighten($primary, 10);
+	$secondary-lightened: lighten($secondary, 10);
+	color:      white;
+	box-shadow: 0 0 0 1px rgba($primary-lightened, .2) inset,
+	            0 0 30px rgba($primary-lightened, .5) inset,
+	            0 0 5px rgba(black, .1),
+	            0 2px 10px rgba(black, .3),
+	            0 6px 20px rgba(black, .3);
+	background: linear-gradient($primary-lightened, $secondary-lightened), $secondary;
+}
+
+._bg-fade-in {
+	$bg: nth($slates, 1);
+	background: linear-gradient(rgba($bg, 0), $bg 50%);
+}
+
 //--------------------------------------------------------------------
+.fab {
+	
+	i {
+		display:   block;
+		color:     white;
+		font-size: 40px;
+	}
+	
+	border:        none;
+	padding:       0;
+	margin:        0 0 0 -33px;
+	width:         66px;
+	height:        66px;
+	border-radius: 50px;
+	cursor:        pointer;
+	position:      fixed;
+	left:          50vw;
+	bottom:        70px;
+}
+
+$track-color: linear-gradient(45deg, $body-color, rgba(white, .0));
+$thumb-color: $body-color;
+$thumb-border-color: transparent;
+
+$track-height: 6px;
+$thumb-size: 20px;
+
+@mixin track() {
+	box-sizing: border-box;
+	border:     none;
+	width:      100%;
+	height:     $track-height;
+	background: $track-color;
+}
+
+@mixin thumb() {
+	box-sizing:    border-box;
+	width:         $thumb-size;
+	height:        $thumb-size;
+	border-radius: 50%;
+	border:        $track-height solid $thumb-border-color;
+	background:    $thumb-color;
+}
+
+[type='range'] {
+	&, &::-webkit-slider-thumb {
+		-webkit-appearance: none
+	}
+	
+	flex:       1;
+	margin:     0;
+	padding:    0;
+	min-height: $thumb-size;
+	background: transparent;
+	font:       inherit;
+	cursor:     pointer;
+	
+	&::-webkit-slider-runnable-track {
+		@include track()
+	}
+	&::-moz-range-track { @include track }
+	&::-ms-track { @include track }
+	
+	&::-webkit-slider-thumb {
+		margin-top: .5*($track-height - $thumb-size);
+		@include thumb
+	}
+	&::-moz-range-thumb { @include thumb }
+	&::-ms-thumb {
+		margin-top: 0;
+		@include thumb
+	}
+	
+	&::-ms-tooltip { display: none }
+	
+	&:focus {
+		box-shadow: none;
+		outline: none;
+		&::-webkit-slider-thumb {
+			background: lighten($body-color, 10);
+			transform: scale(1.1);
+			//box-shadow: 0 0 0 5px rgba(white, .2);
+		}
+		&::-moz-range-thumb {
+			background: lighten($body-color, 10);
+			transform: scale(1.1);
+			//box-shadow: 0 0 0 5px rgba(white, .2);
+		}
+		&::-ms-thumb {
+			background: lighten($body-color, 10);
+			transform: scale(1.1);
+			//box-shadow: 0 0 0 5px rgba(white, .2);
+		}
+	}
+	
+}

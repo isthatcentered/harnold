@@ -1,4 +1,4 @@
-import { Link, RouteComponentProps } from "@reach/router"
+import { RouteComponentProps } from "@reach/router"
 import { device } from "./contracts"
 import { parse } from "query-string"
 import * as React from "react"
@@ -25,7 +25,7 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 		return null
 	}
 	
-	const getStoredScaleOrDefault = () => JSON.parse( window.localStorage.getItem( localStorageKey ) || JSON.stringify( 1 ) ),
+	const getStoredScaleOrDefault = () => JSON.parse( window.localStorage.getItem( localStorageKey ) || JSON.stringify( 0.65 ) ),
 	      [ scale, __setScale ]   = useState( getStoredScaleOrDefault ),
 	      setScale                = ( scale: number ) => {
 		      window.localStorage.setItem( localStorageKey, JSON.stringify( scale ) )
@@ -35,23 +35,38 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 	return (
 		<div
 			{...props}
-			className={`${className} PlaygroundPage `}
+			className={`${className} PlaygroundPage d-flex flex-wrap justify-content-center`}
 		>
 			
+			<h1
+				className="text-center position-fixed w-100 p-5 _bg-fade-in"
+				style={{
+					left:   0,
+					bottom: 0,
+					zIndex: 10,
+				}}
+			>
+				{url}
+			</h1>
+			
 			<ViewScaler
+				className="position-fixed"
 				value={scale}
 				onScale={setScale}
 			/>
 			
 			{devices.map( ( device: device ) =>
 				<Device
+					className="m-0 px-3 pb-4"
 					key={device.label}
 					src={url}
 					scale={scale}
 					{...device}
 				/> )}
 			
-			<Link to="/">Go to home</Link>
+			{/*<button className="fab _lighted">*/}
+			{/*<i className="material-icons">link</i>*/}
+			{/*</button>*/}
 		</div>
 	)
 }
@@ -64,16 +79,19 @@ function ensureRouterHasSubscribedToLocationThen( callback: Function )
 
 
 
-interface DeviceProps extends device
+interface DeviceProps extends device, HTMLAttributes<HTMLDivElement>
 {
 	src: string
 	scale: number
 }
 
 
-function Device( { label, width, height, src, scale }: DeviceProps )
+function Device( { label, width, height, src, scale, className, ...props }: DeviceProps )
 {
-	return <figure className="Device">
+	return <figure
+		{...props}
+		className={`${className} Device`}
+	>
 		{/* https://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/ */}
 		<ScalableIframe
 			width={width}

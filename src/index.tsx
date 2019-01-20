@@ -20,8 +20,8 @@ const devices: device[] = [
 		label:  "iPhone X",
 	},
 	{
-		width:  1024,
-		height: 768,
+		width:  768,
+		height: 1024,
 		label:  "iPad",
 	},
 	{
