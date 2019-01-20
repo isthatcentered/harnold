@@ -2,25 +2,11 @@ import { Link, RouteComponentProps } from "@reach/router"
 import { device } from "./contracts"
 import { parse } from "query-string"
 import * as React from "react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { ScalableIframe } from "./ScalableIFrame"
 import { ViewScaler } from "./ViewScaler"
 
 
-
-// @todo: find a way tot test useEffect hook
-function useLocalStorage<T>( key: string, defaultValue: T ): [ T, ( value: T ) => void ]
-{
-	const [ value, setValue ] = useState( () => {
-		return JSON.parse( window.localStorage.getItem( key ) || JSON.stringify( defaultValue ) )
-	} )
-	
-	useEffect( () => {
-		window.localStorage.setItem( key, JSON.stringify( value ) )
-	}, [ value ] )
-	
-	return [ value, setValue ]
-}
 
 
 export interface PlaygroundPageProps extends RouteComponentProps

@@ -1,0 +1,91 @@
+$slate-0: #01111b;
+$slate-1: #0c1b27;
+$slate-2: #15232f;
+
+$body-bg: $slate-0;
+$body-color: #AEB6BE;
+$font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$font-family-base: $font-family-sans-serif;
+$font-size-base: 1rem;
+$headings-margin-bottom: 0;
+$spacer: 16px;
+$spacers: ();
+$spacers: map-merge(
+				          (
+						          1: 4px,
+						          2: 8px,
+						          3: 12px,
+						          4: 16px,
+						          5: 24px,
+						          6: 32px,
+						          7: 48px,
+						          8: 64px,
+						          9: 96px,
+						          10: 128px,
+						          11: 192px,
+						          12: 256px,
+						          13: 384px,
+						          14: 512px,
+						          15: 640px
+				          ),
+				          $spacers
+          );
+
+$font-sizes: 12px, 14px, 16px, 18px, 20px, 24px, 30px, 36px, 48px, 60px, 72px;
+
+@import "~bootstrap/scss/bootstrap-reboot";
+@import "~bootstrap/scss/utilities";
+
+//$shadow1: 0 1px 3px hsla(0, 0%, .12), 0 1px 2px hsla(0, 0%, .24);
+//$shadow2: 0 3px 6px hsla(0, 0%, .15), 0 2px 3px hsla(0, 0%, .12);
+//$shadow3: 0 10px 20px hsla(0, 0%, .15), 0 3px 6px hsla(0, 0%, .10);
+//$shadow4: 0 15px 25px hsla(0, 0%, .15), 0 1px 3px hsla(0, 0%, .5);
+//$shadow5: 0 20px 40px hsla(0, 0%, .12);
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin:      0;
+	line-height: 1;
+}
+
+p {
+	margin: 0;
+}
+
+html {
+	--primary: #22dac0;
+	--muted:   #ced7df;
+}
+
+@for $i from 1 through length($font-sizes) {
+	$size: nth($font-sizes, $i);
+	._fz-#{$i} {
+		font-size: $size !important;
+	}
+}
+
+._cover {
+	position: absolute;
+	width:    100%;
+	height:   100%;
+	left:     0;
+	top:      0;
+}
+
+._pen {
+	pointer-events: none;
+}
+
+._rounded {
+	border-radius: $border-radius;
+}
+
+._sharpen {
+	border: 1px solid rgba(black, .1);
+}
+
+//--------------------------------------------------------------------

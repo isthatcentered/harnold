@@ -1,5 +1,4 @@
 import React from "react"
-import "./App.css"
 import { Router } from "@reach/router"
 import { device } from "./contracts"
 import { PlaygroundPage } from "./PlaygroundPage"
