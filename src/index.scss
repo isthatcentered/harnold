@@ -1,8 +1,22 @@
-$slate-0: #01111b;
-$slate-1: #0c1b27;
-$slate-2: #15232f;
+$rich-black: rgba(4, 1, 15, 1);
+$dark-gunmetal: rgba(31, 29, 40, 1);
+$russian-violet: rgba(47, 25, 95, 1);
+$deep-green-cyan-turquoise: rgba(19, 111, 99, 1);
+$tiffany-blue: rgba(23, 190, 187, 1);
+$rusty-red: #DA2C38;
 
-$body-bg: $slate-0;
+$dark-orchid: #7F2CCB;
+$vivid-raspberry: #F61067;
+$medium-spring-green: #00F0B5;
+
+$font-sizes: 12px, 14px, 16px, 18px, 20px, 24px, 30px, 36px, 48px, 60px, 72px;
+$slates: #01111b, mix(#10212d, #0C1B27, 60), #15232f;
+//$slates: #0F0F0F, #2D2D2D; // grayscale
+//$slates: $rich-black, $dark-gunmetal; // purpled
+
+$primary: $tiffany-blue;
+$border-radius: 4px;
+$body-bg: nth($slates, 1);
 $body-color: #AEB6BE;
 $font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 $font-family-base: $font-family-sans-serif;
@@ -30,8 +44,6 @@ $spacers: map-merge(
 				          ),
 				          $spacers
           );
-
-$font-sizes: 12px, 14px, 16px, 18px, 20px, 24px, 30px, 36px, 48px, 60px, 72px;
 
 @import "~bootstrap/scss/bootstrap-reboot";
 @import "~bootstrap/scss/utilities";
@@ -61,10 +73,19 @@ html {
 	--muted:   #ced7df;
 }
 
+// Font size helpers
 @for $i from 1 through length($font-sizes) {
 	$size: nth($font-sizes, $i);
 	._fz-#{$i} {
 		font-size: $size !important;
+	}
+}
+
+// Slates colors
+@for $i from 1 through length($slates) {
+	$color: nth($slates, $i);
+	._slate-#{$i - 1} {
+		background: $color !important;
 	}
 }
 

@@ -2,20 +2,20 @@ import { Link, RouteComponentProps } from "@reach/router"
 import { device } from "./contracts"
 import { parse } from "query-string"
 import * as React from "react"
-import { useState } from "react"
+import { HTMLAttributes, useState } from "react"
 import { ScalableIframe } from "./ScalableIFrame"
 import { ViewScaler } from "./ViewScaler"
 
 
 
 
-export interface PlaygroundPageProps extends RouteComponentProps
+export interface PlaygroundPageProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement>
 {
 	devices: device[]
 }
 
 
-export function PlaygroundPage( { location, navigate, devices }: PlaygroundPageProps )
+export function PlaygroundPage( { location, navigate, devices, className = "", ...props }: PlaygroundPageProps )
 {
 	const { url }         = parse( location!.search ) as Partial<{ [ key: string ]: string }>,
 	      localStorageKey = "harnold:playground:scale"
@@ -33,7 +33,10 @@ export function PlaygroundPage( { location, navigate, devices }: PlaygroundPageP
 	      }
 	
 	return (
-		<div className="PlaygroundPage">
+		<div
+			{...props}
+			className={`${className} PlaygroundPage `}
+		>
 			
 			<ViewScaler
 				value={scale}
