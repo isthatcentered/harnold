@@ -16,6 +16,27 @@ const makeApp = makeMakeRoutableComponent<AppProps>( App, {
 	},
 )
 
+describe( `Specifying a website to view`, () => {
+	test( `No sumbmit on empty`, () => {
+		const { wrapper, navigate } = makeApp( "/" )
+		
+		const input = fill( /url of the website to display/i, "", wrapper )
+		
+		submit( input )
+		
+		expect( navigate ).not.toHaveBeenCalled()
+	} )
+	
+	test( `Redirected successfully to playground page`, () => {
+		// const { wrapper, navigate } = makeApp( "/" )
+		//
+		// const input = fill( /url of the website to display/i, "SOME_WEBSITE.com", wrapper )
+		//
+		// submit( input )
+		//
+		// expect( navigate ).toHaveBeenCalledWith( "/playground?url=SOME_WEBSITE.com" )
+	} )
+} )
 
 describe( `No website given in query`, () => {
 	test( `User is redirected to home`, async () => {
@@ -232,4 +253,31 @@ export function getByText<P>( text: RegExp, component: findable<P>, wrapper: Rea
 	return wrapper
 		.find( component as any )
 		.filterWhere( node => node.text().match( text ) !== null )
+}
+
+
+export function fill( target: RegExp, value: any, wrapper: ReactWrapper<any> ): ReactWrapper<InputHTMLAttributes<HTMLInputElement>>
+{
+	
+	const match = getByText( target, "label", wrapper )
+		.find( "input" )
+	
+	if ( !match.exists() )
+		throw new Error( `☺️ Couldn't find any input identifyable by ${target.toString()}` )
+	
+	return match
+}
+
+
+function submit( target: ReactWrapper<any> ): void
+{
+	const form = target.closest( "form" )
+	
+	if ( !form.exists() )
+		throw new Error( `☺️ Couldn't find any form wrapping${target.name()}` )
+	
+	if ( typeof form.props().onSubmit !== "function" )
+		throw new Error( `You provided no "onSubmit" prop for the form you are trying to submit. I think you probably meant to though 🙄` )
+	
+	form.simulate( "submit" )
 }

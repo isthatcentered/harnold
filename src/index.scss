@@ -156,8 +156,9 @@ iframe {
 	bottom:        70px;
 }
 
-$track-color: linear-gradient(45deg, $body-color, rgba(white, .0));
-$thumb-color: $body-color;
+$track-base-color: $body-color;
+$track-color: linear-gradient(45deg, $track-base-color, rgba($track-base-color, .0));
+$thumb-color: $track-base-color;
 $thumb-border-color: transparent;
 
 $track-height: 6px;
@@ -192,6 +193,7 @@ $thumb-size: 20px;
 	background: transparent;
 	font:       inherit;
 	cursor:     pointer;
+	opacity: .6;
 	
 	&::-webkit-slider-runnable-track {
 		@include track()
@@ -215,17 +217,17 @@ $thumb-size: 20px;
 		box-shadow: none;
 		outline: none;
 		&::-webkit-slider-thumb {
-			background: lighten($body-color, 10);
+			background: lighten($track-base-color, 10);
 			transform: scale(1.1);
 			//box-shadow: 0 0 0 5px rgba(white, .2);
 		}
 		&::-moz-range-thumb {
-			background: lighten($body-color, 10);
+			background: lighten($track-base-color, 10);
 			transform: scale(1.1);
 			//box-shadow: 0 0 0 5px rgba(white, .2);
 		}
 		&::-ms-thumb {
-			background: lighten($body-color, 10);
+			background: lighten($track-base-color, 10);
 			transform: scale(1.1);
 			//box-shadow: 0 0 0 5px rgba(white, .2);
 		}
