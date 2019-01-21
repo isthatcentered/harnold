@@ -20,21 +20,18 @@ describe( `Specifying a website to view`, () => {
 	test( `No sumbmit on empty`, () => {
 		const { wrapper, navigate } = makeApp( "/" )
 		
-		const input = fill( /url of the website to display/i, "", wrapper )
-		
-		submit( input )
+		submit( fill( /url of the website you want to view/i, "", wrapper ) )
 		
 		expect( navigate ).not.toHaveBeenCalled()
 	} )
 	
 	test( `Redirected successfully to playground page`, () => {
-		// const { wrapper, navigate } = makeApp( "/" )
-		//
-		// const input = fill( /url of the website to display/i, "SOME_WEBSITE.com", wrapper )
-		//
-		// submit( input )
-		//
-		// expect( navigate ).toHaveBeenCalledWith( "/playground?url=SOME_WEBSITE.com" )
+		const { wrapper, navigate } = makeApp( "/" ),
+		      url                   = "SOME_WEBSITE.com"
+		
+		submit( fill( /url of the website you want to view/i, url, wrapper ) )
+		
+		expect( navigate ).toHaveBeenCalledWith( `/playground?url=${url}`, undefined )
 	} )
 } )
 
@@ -49,29 +46,23 @@ describe( `No website given in query`, () => {
 } )
 
 describe( `"url" given in query`, () => {
-	test( `User is not redirected`, async () => {
+	test( `User is not redirected`, () => {
 		const { wrapper, navigate } = makeApp( "/playground?url=SOME_URL.COM" )
-		
-		await tick()
 		
 		expect( navigate ).not.toHaveBeenCalled()
 	} )
 	
-	test( `Displays a device for each given default device`, async () => {
+	test( `Displays a device for each given default device`, () => {
 		const devices: device[]     = pack( 4, () => makeDevice() ),
 		      { wrapper, navigate } = makeApp( "/playground?url=SOME_URL.COM", { devices } )
-		
-		await tick()
 		
 		expectPageToContainDevicesMatching( devices, wrapper )
 		
 		expect.hasAssertions()
 	} )
 	
-	test( `Each device is set to display the website`, async () => {
+	test( `Each device is set to display the website`, () => {
 		const { wrapper, navigate, query } = makeApp( "/playground?url=URL_FROM_QUERY.com" )
-		
-		await tick()
 		
 		expectDisplayedDevicesToHaveSource( query.url!, wrapper )
 		
@@ -80,11 +71,9 @@ describe( `"url" given in query`, () => {
 } )
 
 describe( `Scaling the view`, () => {
-	test( `Modifying the "view scale" scales the devices`, async () => {
+	test( `Modifying the "view scale" scales the devices`, () => {
 		const { wrapper, navigate, query } = makeApp( "/playground?url=URL_FROM_QUERY.com" ),
 		      newScale: number             = .4
-		
-		await tick()
 		
 		change( /scale the devices up or down/i, newScale, wrapper )
 		
@@ -128,17 +117,26 @@ function makeMakeRoutableComponent<Props>( Component: Function, defaultProps: Pr
 }
 
 
-function change( element: RegExp, value: any, wrapper: ReactWrapper<any> ): ReactWrapper<InputHTMLAttributes<HTMLInputElement>>
+export function fill( target: RegExp, value: any, wrapper: ReactWrapper<any> ): ReactWrapper<InputHTMLAttributes<HTMLInputElement>>
+{
+	return change( target, value, wrapper )
+}
+
+
+function change( target: RegExp, value: any, wrapper: ReactWrapper<any> ): ReactWrapper<InputHTMLAttributes<HTMLInputElement>>
 {
 	const match = wrapper
 		.find( "input" )
-		.filterWhere( node => (node.closest( "label" ).text() || "").match( element ) !== null )
+		.filterWhere( node => (node.closest( "label" ).text() || "").match( target ) !== null )
 	
 	if ( !match.exists() )
-		throw new Error( `☺️ Sorry, found no input identifiable via text ${element}` )
+		throw new Error( `☺️ Sorry, found no input identifiable via text ${target}` )
 	
 	if ( typeof match.props().onChange !== "function" )
-		throw new Error( `You provided no "onChange" prop for input ${element}. I think you might want to though 🙄` )
+		throw new Error( `You provided no "onChange" prop for input ${target}. I think you might want to though 🙄` )
+	
+	if ( match.props().value === undefined )
+		throw new Error( `Your value prop input ${target} is undefined, are you sure you set it ? 🙄` )
 	
 	match.simulate( "change", { target: { value } } )
 	
@@ -256,25 +254,13 @@ export function getByText<P>( text: RegExp, component: findable<P>, wrapper: Rea
 }
 
 
-export function fill( target: RegExp, value: any, wrapper: ReactWrapper<any> ): ReactWrapper<InputHTMLAttributes<HTMLInputElement>>
-{
-	
-	const match = getByText( target, "label", wrapper )
-		.find( "input" )
-	
-	if ( !match.exists() )
-		throw new Error( `☺️ Couldn't find any input identifyable by ${target.toString()}` )
-	
-	return match
-}
-
 
 function submit( target: ReactWrapper<any> ): void
 {
 	const form = target.closest( "form" )
 	
 	if ( !form.exists() )
-		throw new Error( `☺️ Couldn't find any form wrapping${target.name()}` )
+		throw new Error( `☺️ Couldn't find any form wrapping your ${target.name()}` )
 	
 	if ( typeof form.props().onSubmit !== "function" )
 		throw new Error( `You provided no "onSubmit" prop for the form you are trying to submit. I think you probably meant to though 🙄` )

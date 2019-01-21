@@ -1,12 +1,20 @@
-import { RouteComponentProps } from "@reach/router"
+import { Link, RouteComponentProps } from "@reach/router"
 import { device } from "./contracts"
 import { parse } from "query-string"
 import * as React from "react"
-import { HTMLAttributes, useState } from "react"
+import { HTMLAttributes, useEffect, useState } from "react"
 import { ScalableIframe } from "./ScalableIFrame"
 import { ViewScaler } from "./ViewScaler"
 
 
+
+
+function useResetWindowPosition( watch: any )
+{
+	useEffect( () => {
+		window.scrollTo( 0, 0 )
+	}, [ watch ] )
+}
 
 
 export interface PlaygroundPageProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement>
@@ -21,9 +29,11 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 	      localStorageKey = "harnold:playground:scale"
 	
 	if ( !url ) {
-		ensureRouterHasSubscribedToLocationThen( () => navigate!( "/" ) )
+		navigate!( "/" )
 		return null
 	}
+	
+	useResetWindowPosition( url )
 	
 	const getStoredScaleOrDefault = () => JSON.parse( window.localStorage.getItem( localStorageKey ) || JSON.stringify( 0.65 ) ),
 	      [ scale, __setScale ]   = useState( getStoredScaleOrDefault ),
@@ -37,7 +47,6 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 			{...props}
 			className={`${className} PlaygroundPage d-flex flex-wrap justify-content-center`}
 		>
-			
 			<h1
 				className="text-center position-fixed w-100 p-5 _bg-fade-in"
 				style={{
@@ -63,20 +72,8 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 					scale={scale}
 					{...device}
 				/> )}
-			
-			{/*<button className="fab _lighted">*/}
-			{/*<i className="material-icons">link</i>*/}
-			{/*</button>*/}
-		</div>
-	)
+		</div>)
 }
-
-
-function ensureRouterHasSubscribedToLocationThen( callback: Function )
-{
-	process.nextTick( () => callback() )
-}
-
 
 
 interface DeviceProps extends device, HTMLAttributes<HTMLDivElement>

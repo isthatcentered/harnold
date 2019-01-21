@@ -72,4 +72,5 @@ ${printDebug( wrapper )}
 function setGlobals()
 {
 	window.fetch = jest.fn()
+	window.scrollTo = jest.fn()
 }
