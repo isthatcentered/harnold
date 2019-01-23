@@ -136,25 +136,6 @@ iframe {
 }
 
 //--------------------------------------------------------------------
-.fab {
-	
-	i {
-		display:   block;
-		color:     white;
-		font-size: 40px;
-	}
-	
-	border:        none;
-	padding:       0;
-	margin:        0 0 0 -33px;
-	width:         66px;
-	height:        66px;
-	border-radius: 50px;
-	cursor:        pointer;
-	position:      fixed;
-	left:          50vw;
-	bottom:        70px;
-}
 
 $track-base-color: $body-color;
 $track-color: linear-gradient(45deg, $track-base-color, rgba($track-base-color, .0));
@@ -193,7 +174,7 @@ $thumb-size: 20px;
 	background: transparent;
 	font:       inherit;
 	cursor:     pointer;
-	opacity: .6;
+	opacity:    .6;
 	
 	&::-webkit-slider-runnable-track {
 		@include track()
@@ -215,22 +196,92 @@ $thumb-size: 20px;
 	
 	&:focus {
 		box-shadow: none;
-		outline: none;
+		outline:    none;
 		&::-webkit-slider-thumb {
 			background: lighten($track-base-color, 10);
-			transform: scale(1.1);
+			transform:  scale(1.1);
 			//box-shadow: 0 0 0 5px rgba(white, .2);
 		}
 		&::-moz-range-thumb {
 			background: lighten($track-base-color, 10);
-			transform: scale(1.1);
+			transform:  scale(1.1);
 			//box-shadow: 0 0 0 5px rgba(white, .2);
 		}
 		&::-ms-thumb {
 			background: lighten($track-base-color, 10);
-			transform: scale(1.1);
+			transform:  scale(1.1);
 			//box-shadow: 0 0 0 5px rgba(white, .2);
 		}
 	}
 	
+}
+
+@keyframes loader {
+	
+	0% {
+		width: 0;
+	}
+	//
+	//20% {
+	//	width: 10%;
+	//}
+	//
+	//25% {
+	//	width: 24%;
+	//}
+	//
+	//43% {
+	//	width: 41%;
+	//}
+	//
+	//56% {
+	//	width: 50%;
+	//}
+	//
+	//66% {
+	//	width: 52%;
+	//}
+	//
+	//71% {
+	//	width: 60%;
+	//}
+	//
+	//75% {
+	//	width: 76%;
+	//}
+	//
+	//94% {
+	//	width: 86%;
+	//}
+	//
+	100% {
+		width: 100%;
+	}
+	
+}
+
+.Loader {
+	
+	&-progress {
+		display:                   block;
+		width:                     100%;
+		position:                  absolute;
+		top:                       0;
+		left:                      0;
+		height:                    100%;
+		background:                $primary;
+		animation-name:            loader;
+		animation-timing-function: ease-out;
+		animation-duration:        5s;
+		animation-iteration-count: infinite;
+	}
+	
+	position:   fixed;
+	top:        0;
+	left:       0;
+	height:     4px;
+	width:      100%;
+	//opacity:    0;
+	transition: .5s opacity;
+	background: rgba(white, .2);
 }

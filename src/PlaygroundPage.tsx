@@ -48,10 +48,40 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 	return (
 		<div
 			{...props}
-			className={`${className} PlaygroundPage d-flex flex-wrap justify-content-center`}
+			className={`${className} PlaygroundPage`}
 		>
+			<PlaygroundPageView
+				scale={scale}
+				devices={devices}
+				url={url}
+				displayTimeout={2000}
+				onScale={setScale}
+			/>
+		</div>)
+}
+
+
+export interface PlaygroundPageViewProps extends HTMLAttributes<HTMLDivElement>
+{
+	devices: device[]
+	scale: number
+	onScale: ( scale: number ) => any
+	displayTimeout: number
+	url: string
+}
+
+
+export function PlaygroundPageView( { scale, url, onScale, displayTimeout, devices, className = "", ...props }: PlaygroundPageViewProps )
+{
+	
+	return (
+		<div
+			{...props}
+			className={`${className} PlaygroundPageView d-flex flex-wrap justify-content-center`}
+		>
+			
 			<h1
-				className="text-center position-fixed w-100 p-5 _bg-fade-in"
+				className="text-center position-fixed w-100 p-5 _bg-fade-in _fz-2"
 				style={{
 					left:   0,
 					bottom: 0,
@@ -61,26 +91,26 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 				{url}
 			</h1>
 			
+			
+			<Timeout
+				duration={displayTimeout}
+			>
+				{done => !done && <Loader duration={displayTimeout}/>}
+			</Timeout>
+			
+			
 			<ViewScaler
 				className="position-fixed"
 				value={scale}
-				onScale={setScale}
+				onScale={onScale}
 			/>
-			
-			<Timeout
-				duration={2000}
-			>
-				{
-					done => !done && <h1>Loading... 👋</h1>
-				}
-			</Timeout>
 			
 			<Trail
 				config={{
 					tension:  200,
 					friction: 40,
 					easing:   easeCubicInOut,
-					delay:    2000,
+					delay:    displayTimeout,
 				}}
 				items={devices}
 				keys={( device: device ) => device.label}
@@ -103,7 +133,9 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 					/>
 				}
 			</Trail>
-		</div>)
+		
+		</div>
+	)
 }
 
 
@@ -132,3 +164,28 @@ function Device( { label, width, height, src, scale, className, ...props }: Devi
 }
 
 
+export interface LoaderProps
+{
+	duration: number
+}
+
+
+export function Loader( { duration }: LoaderProps )
+{
+	
+	return (
+		<div
+			className={`Loader`}
+		>
+			
+			<div
+				className="Loader-progress"
+				style={{
+					animationDuration: `${duration / 1000}s`,
+				}}
+			>
+			
+			</div>
+		</div>
+	)
+}
