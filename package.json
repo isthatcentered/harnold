@@ -6,6 +6,7 @@
         "@isthatcentered/charlies-factory": "^1.4.0",
         "@isthatcentered/tickable": "^1.0.0-beta.0",
         "@reach/router": "^1.2.1",
+        "@types/d3-ease": "^1.0.7",
         "@types/enzyme": "^3.1.15",
         "@types/enzyme-adapter-react-16": "^1.0.3",
         "@types/jest": "23.3.12",
@@ -14,6 +15,7 @@
         "@types/reach__router": "^1.2.2",
         "@types/react": "16.7.20",
         "@types/react-dom": "16.0.11",
+        "d3-ease": "^1.0.5",
         "enzyme": "^3.8.0",
         "enzyme-adapter-react-16": "^1.7.1",
         "node-sass": "^4.11.0",
@@ -21,6 +23,7 @@
         "react": "^16.8.0-alpha.1",
         "react-dom": "^16.8.0-alpha.1",
         "react-scripts": "2.1.3",
+        "react-spring": "^7.2.10",
         "typescript": "3.2.4"
     },
     "scripts": {

@@ -1,11 +1,12 @@
-import { Link, RouteComponentProps } from "@reach/router"
+import { RouteComponentProps } from "@reach/router"
 import { device } from "./contracts"
 import { parse } from "query-string"
 import * as React from "react"
 import { HTMLAttributes, useEffect, useState } from "react"
 import { ScalableIframe } from "./ScalableIFrame"
 import { ViewScaler } from "./ViewScaler"
-
+import { Trail } from "react-spring"
+import { easeCubicInOut } from "d3-ease"
 
 
 
@@ -64,14 +65,27 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 				onScale={setScale}
 			/>
 			
-			{devices.map( ( device: device ) =>
-				<Device
-					className="m-0 px-3 pb-4"
-					key={device.label}
-					src={url}
-					scale={scale}
-					{...device}
-				/> )}
+			<Trail
+				config={{
+					tension:  200,
+					friction: 40,
+					easing:   easeCubicInOut,
+				}}
+				items={devices}
+				keys={( device: device ) => device.label}
+				from={{ transform: "translateY(400px)" }}
+				to={{ transform: "translateY(0)" }}
+			>
+				{device => styles =>
+					<Device
+						className="m-0 px-3 pb-4"
+						style={styles}
+						src={url}
+						scale={scale}
+						{...device}
+					/>
+				}
+			</Trail>
 		</div>)
 }
 
@@ -99,3 +113,6 @@ function Device( { label, width, height, src, scale, className, ...props }: Devi
 		<figcaption>{label}</figcaption>
 	</figure>
 }
+
+
+
