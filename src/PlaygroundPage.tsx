@@ -10,6 +10,7 @@ import { easeCubicInOut } from "d3-ease"
 
 
 
+
 function useResetWindowPosition( watch: any )
 {
 	useEffect( () => {
@@ -70,11 +71,18 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 					tension:  200,
 					friction: 40,
 					easing:   easeCubicInOut,
+					delay:    2000,
 				}}
 				items={devices}
 				keys={( device: device ) => device.label}
-				from={{ transform: "translateY(400px)" }}
-				to={{ transform: "translateY(0)" }}
+				from={{
+					opacity:   0,
+					transform: "translateY(400px)",
+				}}
+				to={{
+					opacity:   1,
+					transform: "translateY(0)",
+				}}
 			>
 				{device => styles =>
 					<Device
