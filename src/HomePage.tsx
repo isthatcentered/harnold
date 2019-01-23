@@ -14,7 +14,7 @@ export interface HomePageProps extends RouteComponentProps
 export function HomePage( { navigate }: HomePageProps )
 {
 	
-	const [ url, setUrl ] = useState( "https://www.reactjs.org" )
+	const [ url, setUrl ] = useState( "" )
 	
 	
 	function handleSubmit( e: FormEvent<HTMLFormElement> )
@@ -39,7 +39,7 @@ export function HomePage( { navigate }: HomePageProps )
 						onChange={e => setUrl( e.target.value )}
 					/>
 				</label>
-				{url && <button type="submit">Display {url}</button>}
+				{url && <button type="submit"><i aria-hidden="true">👉</i><span className="sr-only">Display {url}</span></button>}
 			</form>
 		</div>
 	)

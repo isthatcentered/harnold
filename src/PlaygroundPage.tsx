@@ -8,6 +8,7 @@ import { ViewScaler } from "./ViewScaler"
 import { Trail } from "react-spring"
 import { easeCubicInOut } from "d3-ease"
 import { Timeout } from "./Timeout"
+import { Loader } from "./Loader"
 
 
 
@@ -79,18 +80,6 @@ export function PlaygroundPageView( { scale, url, onScale, displayTimeout, devic
 			{...props}
 			className={`${className} PlaygroundPageView d-flex flex-wrap justify-content-center`}
 		>
-			{/*<h1*/}
-			{/*className="text-center position-fixed w-100 p-5  _fz-2"*/}
-			{/*style={{*/}
-			{/*left:   0,*/}
-			{/*bottom: 0,*/}
-			{/*zIndex: 10,*/}
-			{/*}}*/}
-			{/*>*/}
-			{/*{url}*/}
-			{/*</h1>*/}
-			
-			
 			<Timeout
 				duration={displayTimeout}
 			>
@@ -174,28 +163,3 @@ function Device( { label, width, height, src, scale, className, ...props }: Devi
 }
 
 
-export interface LoaderProps
-{
-	duration: number
-}
-
-
-export function Loader( { duration }: LoaderProps )
-{
-	
-	return (
-		<div
-			className={`Loader`}
-		>
-			
-			<div
-				className="Loader-progress"
-				style={{
-					animationDuration: `${duration / 1000}s`,
-				}}
-			>
-			
-			</div>
-		</div>
-	)
-}
