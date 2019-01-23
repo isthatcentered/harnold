@@ -157,6 +157,7 @@ function Device( { label, width, height, src, scale, className, ...props }: Devi
 			height={height}
 			src={src}
 			scale={scale}
+			title={`${label} view of the ${src} website`}
 		/>
 		<figcaption>{label}</figcaption>
 	</figure>
