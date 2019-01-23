@@ -7,6 +7,7 @@ import { ScalableIframe } from "./ScalableIFrame"
 import { ViewScaler } from "./ViewScaler"
 import { Trail } from "react-spring"
 import { easeCubicInOut } from "d3-ease"
+import { Timeout } from "./Timeout"
 
 
 
@@ -66,6 +67,14 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 				onScale={setScale}
 			/>
 			
+			<Timeout
+				duration={2000}
+			>
+				{
+					done => !done && <h1>Loading... 👋</h1>
+				}
+			</Timeout>
+			
 			<Trail
 				config={{
 					tension:  200,
@@ -121,6 +130,5 @@ function Device( { label, width, height, src, scale, className, ...props }: Devi
 		<figcaption>{label}</figcaption>
 	</figure>
 }
-
 
 
