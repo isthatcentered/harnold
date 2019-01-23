@@ -79,23 +79,33 @@ export function PlaygroundPageView( { scale, url, onScale, displayTimeout, devic
 			{...props}
 			className={`${className} PlaygroundPageView d-flex flex-wrap justify-content-center`}
 		>
-			
-			<h1
-				className="text-center position-fixed w-100 p-5 _bg-fade-in _fz-2"
-				style={{
-					left:   0,
-					bottom: 0,
-					zIndex: 10,
-				}}
-			>
-				{url}
-			</h1>
+			{/*<h1*/}
+			{/*className="text-center position-fixed w-100 p-5  _fz-2"*/}
+			{/*style={{*/}
+			{/*left:   0,*/}
+			{/*bottom: 0,*/}
+			{/*zIndex: 10,*/}
+			{/*}}*/}
+			{/*>*/}
+			{/*{url}*/}
+			{/*</h1>*/}
 			
 			
 			<Timeout
 				duration={displayTimeout}
 			>
-				{done => !done && <Loader duration={displayTimeout}/>}
+				{done => !done && <div>
+					<Loader duration={displayTimeout}/>
+					<h1 style={{
+						position:  "fixed",
+						top:       "50%",
+						left:      "50%",
+						transform: "translate(-50%,-50%)",
+						opacity:   .2,
+					}}>
+						{url}
+					</h1>
+				</div>}
 			</Timeout>
 			
 			
