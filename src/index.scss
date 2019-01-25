@@ -49,8 +49,12 @@ $spacers: map-merge(
 				          $spacers
           );
 
+
+
 @import "~bootstrap/scss/bootstrap-reboot";
 @import "~bootstrap/scss/utilities";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/forms";
 
 //$shadow1: 0 1px 3px hsla(0, 0%, .12), 0 1px 2px hsla(0, 0%, .24);
 //$shadow2: 0 3px 6px hsla(0, 0%, .15), 0 2px 3px hsla(0, 0%, .12);
@@ -143,6 +147,21 @@ iframe {
 	background: linear-gradient(rgba($bg, 0), $bg 50%);
 }
 
+._pin {
+	&-top {
+		top: 0;
+	}
+	&-left {
+		left: 0;
+	}
+	&-right {
+		right: 0;
+	}
+	&-bottom {
+		bottom: 0;
+	}
+}
+
 //--------------------------------------------------------------------
 
 $track-base-color: $body-color;
@@ -222,6 +241,19 @@ $thumb-size: 20px;
 		}
 	}
 	
+}
+
+
+@keyframes float {
+	0% {
+		transform: translatey(0px);
+	}
+	50% {
+		transform: translatey(-15px);
+	}
+	100% {
+		transform: translatey(0px);
+	}
 }
 
 @keyframes loader {

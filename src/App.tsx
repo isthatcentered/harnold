@@ -50,10 +50,20 @@ export function App( { devices }: AppProps )
 			</header>
 			
 			
-			
-			<main className="pl-7">
+			<main className="">
 				<Router>
-					<HomePage path="/"/>
+					
+					<HomePage
+						path="/"
+						style={{
+							minHeight:      "calc(100vh - 48px)",
+							display:        "flex",
+							alignItems:     "center",
+							justifyContent: "center",
+							flexDirection:  "column",
+						}}
+					/>
+					
 					<PlaygroundPage
 						devices={devices}
 						path="/playground"
