@@ -13,30 +13,31 @@ export interface ScalableIframeProps extends IframeHTMLAttributes<HTMLIFrameElem
 }
 
 
-export function ScalableIframe( { scale = 1, width, height, ...props }: ScalableIframeProps )
-{
-	if ( scale > 2 || scale < 0 )
-		throw new Error( `ScalableIframe expects a value between 0 and 2` )
-	
-	const scaledWidth  = width * scale,
-	      scaledHeight = height * scale
-	
-	return (
-		<div
-			className="ScalableIframe"
-			style={{
-				width:           scaledWidth,
-				height:          scaledHeight,
-				transform:       `scale(${scale})`,
-				transformOrigin: `top left`,
-			}}
-		>
-			<iframe
-				sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-				{...props}
-				width={width}
-				height={height}
-			/>
-		</div>
-	)
-}
+export const ScalableIframe = React.memo(
+	function ( { scale = 1, width, height, ...props }: ScalableIframeProps )
+	{
+		if ( scale > 2 || scale < 0 )
+			throw new Error( `ScalableIframe expects a value between 0 and 2` )
+
+		const scaledWidth = width * scale,
+			scaledHeight = height * scale
+
+		return (
+			<div
+				className="ScalableIframe"
+				style={{
+					width: scaledWidth,
+					height: scaledHeight,
+					transform: `scale(${ scale })`,
+					transformOrigin: `top left`,
+				}}
+			>
+				<iframe
+					sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+					{...props}
+					width={width}
+					height={height}
+				/>
+			</div>
+		)
+	} )
