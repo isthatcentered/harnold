@@ -6,6 +6,30 @@ import "./homePage.scss"
 
 
 
+export interface WaveProps extends HTMLAttributes<HTMLDivElement>
+{
+	active: boolean
+}
+
+
+export function Checkpoint( { active, style = {}, className = "", children, ...props }: WaveProps )
+{
+	
+	return (
+		<div
+			{...props}
+			style={{ ...style }}
+			className={`${className} Checkpoint ${active ?
+			                                      "active" :
+			                                      ""}`}
+		>
+			{children}
+		</div>
+	)
+}
+
+
+
 export interface HomePageProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement>
 {
 
@@ -57,35 +81,34 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 					maxWidth: "100%",
 				}}
 			>
-				<label className="m-0 d-block">
-					<span className="sr-only">Enter the url of the website you want to view</span>
-					<input
-						type="text"
-						value={url}
-						autoFocus
-						onChange={e => setUrl( e.target.value )}
-						className="form-control form-control-lg m-0 _fz-7"
-						placeholder="https://waffles.com"
-						style={{
-							height:      "64px",
-							borderWidth: "2px",
-						}}
-					/>
-				</label>
+				<Checkpoint active={!url.length}
+				            style={{ borderRadius: "5px" }}>
+					<label className="m-0 d-block ">
+						<span className="sr-only">Enter the url of the website you want to view</span>
+						<input
+							type="text"
+							value={url}
+							autoFocus
+							onChange={e => setUrl( e.target.value )}
+							className="form-control form-control-lg m-0 _fz-7 "
+							placeholder="https://my-website.com"
+							style={{
+								boxShadow:   "none",
+								height:      "64px",
+								borderWidth: "2px",
+							}}
+						/>
+					</label>
+				</Checkpoint>
 				
 				<button
 					type="submit"
 					className="position-absolute h-100 _pin-top _pin-right bg-transparent px-4 border-0 _fz-8"
 					style={{}}
+					disabled={!url}
 				>
-					{
-						url &&
-						<>
-							<i aria-hidden="true">👌</i>
-							<span className="sr-only">Display {url}</span>
-						</>
-					}
-					👈
+					<i aria-hidden="true">{url ? "👌" : "👈"}</i>
+					<span className="sr-only">Show the repsonsive views of this website</span>
 				</button>
 			</form>
 			
