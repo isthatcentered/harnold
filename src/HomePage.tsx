@@ -1,6 +1,6 @@
 import { RouteComponentProps } from "@reach/router"
 import * as React from "react"
-import { FormEvent, HTMLAttributes, useState } from "react"
+import { ChangeEventHandler, FormEvent, HTMLAttributes, InputHTMLAttributes, useState } from "react"
 import "./homePage.scss"
 
 
@@ -83,22 +83,16 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 			>
 				<Checkpoint active={!url.length}
 				            style={{ borderRadius: "5px" }}>
-					<label className="m-0 d-block ">
-						<span className="sr-only">Enter the url of the website you want to view</span>
-						<input
-							type="text"
-							value={url}
-							autoFocus
-							onChange={e => setUrl( e.target.value )}
-							className="form-control form-control-lg m-0 _fz-7 "
-							placeholder="https://my-website.com"
-							style={{
-								boxShadow:   "none",
-								height:      "64px",
-								borderWidth: "2px",
-							}}
-						/>
-					</label>
+					
+					<LargeInput
+						type="text"
+						value={url}
+						autoFocus
+						onChange={e => setUrl( e.target.value )}
+						placeholder="https://my-website.com"
+					>
+						Enter the url of the website you want to view
+					</LargeInput>
 				</Checkpoint>
 				
 				<button
@@ -107,7 +101,9 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 					style={{}}
 					disabled={!url}
 				>
-					<i aria-hidden="true">{url ? "👌" : "👈"}</i>
+					<i aria-hidden="true">{url ?
+					                       "👌" :
+					                       "👈"}</i>
 					<span className="sr-only">Show the repsonsive views of this website</span>
 				</button>
 			</form>
@@ -116,4 +112,31 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 			                                             href="https://developers.google.com/web/">developers.google.com/web/</a></p>
 		</div>
 	)
+}
+
+
+export interface LargeInputProps extends InputHTMLAttributes<HTMLInputElement>
+{
+	value: string
+	onChange: ChangeEventHandler<HTMLInputElement>
+}
+
+
+export function LargeInput( { style = {}, className = "", children, ...props }: LargeInputProps )
+{
+	
+	return (
+		<label className="m-0 d-block ">
+			{children && <span className="sr-only">{children}</span>}
+			<input
+				{...props}
+				style={{
+					...style,
+					boxShadow:   "none",
+					height:      "64px",
+					borderWidth: "2px",
+				}}
+				className={`${className} LargeInput form-control form-control-lg m-0 _fz-7 `}
+			/>
+		</label>)
 }
