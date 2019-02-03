@@ -1,25 +1,16 @@
 import { RouteComponentProps } from "@reach/router"
 import { device } from "./contracts"
-import { parse } from "query-string"
 import * as React from "react"
-import { HTMLAttributes, useEffect } from "react"
+import { HTMLAttributes } from "react"
 import { ScalableIframe } from "./ScalableIFrame"
 import { ViewScaler } from "./ViewScaler"
 import { Trail } from "react-spring"
 import { easeCubicInOut } from "d3-ease"
 import { Timeout } from "./Timeout"
 import { Loader } from "./Loader"
-import { useLocalStorage } from "./useLocalStorage"
+import { useLocalStorage, useResetWindowPosition, useUrlQuery } from "./hooks"
 
 
-
-
-function useResetWindowPosition( watch: any )
-{
-	useEffect( () => {
-		window.scrollTo( 0, 0 )
-	}, [ watch ] )
-}
 
 
 export interface PlaygroundPageProps extends RouteComponentProps, HTMLAttributes<HTMLDivElement>
@@ -30,7 +21,8 @@ export interface PlaygroundPageProps extends RouteComponentProps, HTMLAttributes
 
 export function PlaygroundPage( { location, navigate, devices, className = "", ...props }: PlaygroundPageProps )
 {
-	const { url }         = parse( location!.search ) as Partial<{ [ key: string ]: string }>
+	
+	const { url } = useUrlQuery<{ url: string }>( location!.search )
 	
 	if ( !url ) {
 		navigate!( "/" )
@@ -39,7 +31,7 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 	
 	useResetWindowPosition( url )
 	
-	const [ scale, setScale ]     = useLocalStorage( "harnold:playground:scale", 0.65 )
+	const [ scale, setScale ] = useLocalStorage( "harnold:playground:scale", 0.65 )
 	
 	return (
 		<div

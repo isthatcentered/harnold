@@ -12,7 +12,7 @@ function Logo( { className = "", style = {}, ...props }: HTMLAttributes<HTMLDivE
 	return (
 		<Link
 			to="/"
-			className="no-underline"
+			className="hover:no-underline"
 		>
 			<i
 				{...props}
