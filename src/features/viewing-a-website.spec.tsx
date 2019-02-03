@@ -82,7 +82,7 @@ describe( `Scaling the view`, () => {
 		expect.hasAssertions()
 	} )
 	
-	test( `View scale is backed up on refresh`, () => {
+	test( `View scale is backed up on refresh`, async () => {
 		const oldScale: number = .3,
 		      newScale: number = .7,
 		      storingKey       = "harnold:playground:scale"
@@ -94,6 +94,11 @@ describe( `Scaling the view`, () => {
 		expectDisplayedDevicesToBeAtScale( oldScale, wrapper )
 		
 		change( /scale the devices up or down/i, newScale, wrapper )
+		
+		wrapper.update()
+		wrapper.unmount()
+		
+		await tick()
 		
 		expect( window.localStorage.getItem( storingKey ) ).toBe( newScale.toString() )
 	} )

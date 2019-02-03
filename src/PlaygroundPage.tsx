@@ -2,13 +2,14 @@ import { RouteComponentProps } from "@reach/router"
 import { device } from "./contracts"
 import { parse } from "query-string"
 import * as React from "react"
-import { HTMLAttributes, useEffect, useState } from "react"
+import { HTMLAttributes, useEffect } from "react"
 import { ScalableIframe } from "./ScalableIFrame"
 import { ViewScaler } from "./ViewScaler"
 import { Trail } from "react-spring"
 import { easeCubicInOut } from "d3-ease"
 import { Timeout } from "./Timeout"
 import { Loader } from "./Loader"
+import { useLocalStorage } from "./useLocalStorage"
 
 
 
@@ -29,8 +30,7 @@ export interface PlaygroundPageProps extends RouteComponentProps, HTMLAttributes
 
 export function PlaygroundPage( { location, navigate, devices, className = "", ...props }: PlaygroundPageProps )
 {
-	const { url }         = parse( location!.search ) as Partial<{ [ key: string ]: string }>,
-	      localStorageKey = "harnold:playground:scale"
+	const { url }         = parse( location!.search ) as Partial<{ [ key: string ]: string }>
 	
 	if ( !url ) {
 		navigate!( "/" )
@@ -39,12 +39,7 @@ export function PlaygroundPage( { location, navigate, devices, className = "", .
 	
 	useResetWindowPosition( url )
 	
-	const getStoredScaleOrDefault = () => JSON.parse( window.localStorage.getItem( localStorageKey ) || JSON.stringify( 0.65 ) ),
-	      [ scale, __setScale ]   = useState( getStoredScaleOrDefault ),
-	      setScale                = ( scale: number ) => {
-		      window.localStorage.setItem( localStorageKey, JSON.stringify( scale ) )
-		      __setScale( scale )
-	      }
+	const [ scale, setScale ]     = useLocalStorage( "harnold:playground:scale", 0.65 )
 	
 	return (
 		<div
