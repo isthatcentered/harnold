@@ -141,7 +141,9 @@ iframe {
 	            0 6px 20px rgba(black, .3);
 	background: linear-gradient($primary-lightened, $secondary-lightened), $secondary;
 }
-
+._underline {
+	text-decoration: underline;
+}
 ._bg-fade-in {
 	$bg: nth($slates, 1);
 	background: linear-gradient(rgba($bg, 0), $bg 50%);

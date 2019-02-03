@@ -45,7 +45,7 @@ export function App( { devices }: AppProps )
 	
 	return (
 		<div className="App">
-			<header className="pt-7">
+			<header className="fixed-top">
 				<Logo/>
 			</header>
 			
@@ -55,13 +55,6 @@ export function App( { devices }: AppProps )
 					
 					<HomePage
 						path="/"
-						style={{
-							minHeight:      "calc(100vh - 48px)",
-							display:        "flex",
-							alignItems:     "center",
-							justifyContent: "center",
-							flexDirection:  "column",
-						}}
 					/>
 					
 					<PlaygroundPage
