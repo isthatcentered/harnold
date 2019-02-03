@@ -1,6 +1,6 @@
 import { RouteComponentProps } from "@reach/router"
 import * as React from "react"
-import { ChangeEventHandler, FormEvent, HTMLAttributes, InputHTMLAttributes, useState } from "react"
+import { ChangeEventHandler, FormEvent, FormEventHandler, HTMLAttributes, InputHTMLAttributes, useState } from "react"
 import "./homePage.scss"
 
 
@@ -20,7 +20,7 @@ export function Checkpoint( { active, className = "", children, ...props }: Wave
 	return (
 		<div
 			{...props}
-			className={`${className} Checkpoint ${stateClasses.join(" ")} `}
+			className={`${className} Checkpoint ${stateClasses.join( " " )} `}
 		>
 			{children}
 		</div>
@@ -55,7 +55,31 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 	return (
 		<div
 			{...props}
-			className={`${ className } HomePage text-center d-flex flex-column justify-content-center min-h-screen`}
+			className={`${ className } HomePage`}
+		>
+			<HomePageView
+				url={url}
+				onSubmit={handleSubmit}
+				onUrlChange={e => setUrl( e.target.value )}
+			/>
+		</div>)
+}
+
+
+export interface HomePageViewProps extends HTMLAttributes<HTMLDivElement>
+{
+	onSubmit: FormEventHandler
+	onUrlChange: ChangeEventHandler<HTMLInputElement>
+	url: string
+}
+
+
+export function HomePageView( { onSubmit, onUrlChange, url, className = "", children, ...props }: HomePageViewProps )
+{
+	return (
+		<div
+			{...props}
+			className={`${className} HomePageView text-center d-flex flex-column justify-content-center min-h-screen`}
 		>
 			<style>
 				{`
@@ -70,7 +94,7 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 			
 			
 			<form
-				onSubmit={handleSubmit}
+				onSubmit={onSubmit}
 				className="position-relative mb-4 mx-auto"
 				style={{
 					width:    "520px",
@@ -85,7 +109,7 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 						type="text"
 						value={url}
 						autoFocus
-						onChange={e => setUrl( e.target.value )}
+						onChange={onUrlChange}
 						placeholder="https://my-website.com"
 					>
 						Enter the url of the website you want to view
@@ -97,18 +121,27 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 					className="absolute pin-r pin-t h-full bg-transparent px-4 border-0 text-4xl"
 					disabled={!url}
 				>
-					<i aria-hidden="true">{url ?
-					                       "👌" :
-					                       "👈"}</i>
+					<i aria-hidden="true">
+						{url ?
+						 "👌" :
+						 "👈"}
+					</i>
 					<span className="sr-only">Show the repsonsive views of this website</span>
 				</button>
 			</form>
 			
-			<p className="text-sm">Or try one of those: <a className="text-reset underline"
-			                                               href="https://developers.google.com/web/">developers.google.com/web/</a></p>
-		</div>
-	)
+			<p className="text-sm">
+				Or try one of those:
+				<a
+					className="text-reset underline"
+					href="https://developers.google.com/web/"
+				>
+					developers.google.com/web/
+				</a>
+			</p>
+		</div>)
 }
+
 
 
 export interface HeroInputProps extends InputHTMLAttributes<HTMLInputElement>

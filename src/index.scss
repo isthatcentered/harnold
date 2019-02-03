@@ -60,6 +60,19 @@ $spacers: map-merge(
 //$shadow4: 0 15px 25px hsla(0, 0%, .15), 0 1px 3px hsla(0, 0%, .5);
 //$shadow5: 0 20px 40px hsla(0, 0%, .12);
 
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+
 h1,
 h2,
 h3,
