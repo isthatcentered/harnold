@@ -12,16 +12,15 @@ export interface WaveProps extends HTMLAttributes<HTMLDivElement>
 }
 
 
-export function Checkpoint( { active, style = {}, className = "", children, ...props }: WaveProps )
+export function Checkpoint( { active, className = "", children, ...props }: WaveProps )
 {
-	
+	const stateClasses: string[] = active ?
+	                               [ "active" ] :
+	                               []
 	return (
 		<div
 			{...props}
-			style={{ ...style }}
-			className={`${className} Checkpoint ${active ?
-			                                      "active" :
-			                                      ""}`}
+			className={`${className} Checkpoint ${stateClasses.join(" ")} `}
 		>
 			{children}
 		</div>
@@ -56,20 +55,17 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 	return (
 		<div
 			{...props}
-			className={`${ className } HomePage text-center d-flex flex-column justify-content-center`}
-			style={{
-				minHeight: "100vh",
-			}}
+			className={`${ className } HomePage text-center d-flex flex-column justify-content-center min-h-screen`}
 		>
-			
 			<style>
 				{`
 					body {background: white;}
 				`}
 			</style>
+			
 			<header>
-				<h1 className="_fz-9 mb-4 text-dark font-weight-bold">Stop resizing your window to<br/>check breakpoints</h1>
-				<p className="_fz-5 mb-6 text-dark font-weight-bold">...Just check them all at once</p>
+				<h1 className="text-5xl mb-4 text-dark font-bold">Stop resizing your window to<br/>check breakpoints</h1>
+				<p className="text-xl mb-6 text-dark font-bold">...Just check them all at once</p>
 			</header>
 			
 			
@@ -81,10 +77,11 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 					maxWidth: "100%",
 				}}
 			>
-				<Checkpoint active={!url.length}
-				            style={{ borderRadius: "5px" }}>
-					
-					<LargeInput
+				<Checkpoint
+					active={!url.length}
+					className="rounded-lg"
+				>
+					<HeroInput
 						type="text"
 						value={url}
 						autoFocus
@@ -92,13 +89,12 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 						placeholder="https://my-website.com"
 					>
 						Enter the url of the website you want to view
-					</LargeInput>
+					</HeroInput>
 				</Checkpoint>
 				
 				<button
 					type="submit"
-					className="position-absolute h-100 _pin-top _pin-right bg-transparent px-4 border-0 _fz-8"
-					style={{}}
+					className="absolute pin-r pin-t h-full bg-transparent px-4 border-0 text-4xl"
 					disabled={!url}
 				>
 					<i aria-hidden="true">{url ?
@@ -108,35 +104,33 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 				</button>
 			</form>
 			
-			<p className="_fz-2">Or try one of those: <a className="text-reset _underline"
-			                                             href="https://developers.google.com/web/">developers.google.com/web/</a></p>
+			<p className="text-sm">Or try one of those: <a className="text-reset underline"
+			                                               href="https://developers.google.com/web/">developers.google.com/web/</a></p>
 		</div>
 	)
 }
 
 
-export interface LargeInputProps extends InputHTMLAttributes<HTMLInputElement>
+export interface HeroInputProps extends InputHTMLAttributes<HTMLInputElement>
 {
 	value: string
 	onChange: ChangeEventHandler<HTMLInputElement>
 }
 
 
-export function LargeInput( { style = {}, className = "", children, ...props }: LargeInputProps )
+export function HeroInput( { style = {}, className = "", children, ...props }: HeroInputProps )
 {
 	
 	return (
-		<label className="m-0 d-block ">
+		<label className="m-0 block ">
 			{children && <span className="sr-only">{children}</span>}
 			<input
 				{...props}
 				style={{
 					...style,
-					boxShadow:   "none",
-					height:      "64px",
-					borderWidth: "2px",
+					height: "64px",
 				}}
-				className={`${className} LargeInput form-control form-control-lg m-0 _fz-7 `}
+				className={`${className} LargeInput m-0 px-4 text-3xl border-2 shadow-none rounded-lg w-full outline-none focus:border-teal`}
 			/>
 		</label>)
 }

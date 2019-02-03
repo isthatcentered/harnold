@@ -9,28 +9,22 @@ import { HomePage } from "./HomePage"
 
 function Logo( { className = "", style = {}, ...props }: HTMLAttributes<HTMLDivElement> )
 {
-	return <Link to="/">
-		<i
-			{...props}
-			className={`${className} logo text-primary`}
-			style={{
-				...style,
-				fontWeight: "bold",
-				display:    "inline-block",
-				width:      "48px",
-				fontStyle:  "normal",
-				position:   "absolute",
-				top:        0,
-				left:       0,
-				fontSize:   "20px",
-				height:     "48px",
-				textAlign:  "center",
-				lineHeight: "48px",
-				textShadow: "3px 2px #7F2CCB",
-			}}>
-			H
-		</i>
-	</Link>
+	return (
+		<Link
+			to="/"
+			className="no-underline"
+		>
+			<i
+				{...props}
+				className={`${className} text-teal px-4 py-2 font-bold block roman`}
+				style={{
+					...style,
+					fontSize:   "20px",
+					textShadow: "3px 2px #7F2CCB",
+				}}>
+				H
+			</i>
+		</Link>)
 }
 
 
@@ -45,8 +39,10 @@ export function App( { devices }: AppProps )
 	
 	return (
 		<div className="App">
-			<header className="fixed-top">
+			<header className="fixed-top flex items-center justify-start">
 				<Logo/>
+				<a className="ml-auto px-4 py-2 text-sm"
+				   href="mailto:e.peninb@gmail.com">Contact</a>
 			</header>
 			
 			
@@ -64,22 +60,5 @@ export function App( { devices }: AppProps )
 					/>
 				</Router>
 			</main>
-			
-			{/*<div className="d-flex flex-row align-items-start">*/}
-			{/*<nav className="pl-7"*/}
-			{/*style={{ width: "48px" }}>*/}
-			{/**/}
-			{/*</nav>*/}
-			{/*<main*/}
-			{/*className="flex-grow-1 p-5 d-flex align-items-center"*/}
-			{/*style={{*/}
-			{/*minHeight:           "calc(100vh - 48px)",*/}
-			{/*width:               "calc(100vw - 48px)",*/}
-			{/*borderTopLeftRadius: "4px",*/}
-			{/*}}*/}
-			{/*>*/}
-			{/**/}
-			{/*</main>*/}
-			{/*</div>*/}
 		</div>)
 }
