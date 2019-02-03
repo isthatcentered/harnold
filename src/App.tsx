@@ -12,17 +12,16 @@ function Logo( { className = "", style = {}, ...props }: HTMLAttributes<HTMLDivE
 	return (
 		<Link
 			to="/"
-			className="hover:no-underline"
+			className="no-underline hover:no-underline"
 		>
 			<i
 				{...props}
-				className={`${className} text-teal px-4 py-2 font-bold block roman`}
+				className={`${className} text-purple-dark px-4 py-2 font-bold block roman`}
 				style={{
 					...style,
-					fontSize:   "20px",
-					textShadow: "3px 2px #7F2CCB",
+					fontSize:   "18px",
 				}}>
-				H
+				Harnold
 			</i>
 		</Link>)
 }
@@ -39,9 +38,9 @@ export function App( { devices }: AppProps )
 	
 	return (
 		<div className="App">
-			<header className="fixed-top flex items-center justify-start">
+			<header className="fixed pin-t pin-l w-full flex items-center justify-start ">
 				<Logo/>
-				<a className="ml-auto px-4 py-2 text-sm"
+				<a className="ml-auto px-4 py-2 text-sm text-teal"
 				   href="mailto:e.peninb@gmail.com">Contact</a>
 			</header>
 			

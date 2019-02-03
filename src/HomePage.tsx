@@ -79,7 +79,7 @@ export function HomePageView( { onSubmit, onUrlChange, url, className = "", chil
 	return (
 		<div
 			{...props}
-			className={`${className} HomePageView text-center d-flex flex-column justify-content-center min-h-screen`}
+			className={`${className} HomePageView flex flex-col justify-center min-h-screen container mx-auto px-4 text-center`}
 		>
 			<style>
 				{`
@@ -95,7 +95,7 @@ export function HomePageView( { onSubmit, onUrlChange, url, className = "", chil
 			
 			<form
 				onSubmit={onSubmit}
-				className="position-relative mb-4 mx-auto"
+				className="relative mb-4 mx-auto"
 				style={{
 					width:    "520px",
 					maxWidth: "100%",
@@ -130,10 +130,11 @@ export function HomePageView( { onSubmit, onUrlChange, url, className = "", chil
 				</button>
 			</form>
 			
-			<p className="text-sm">
-				Or try one of those:
+			<p className="text-sm text-grey">
+				Or try one of those:&nbsp;
 				<a
-					className="text-reset underline"
+					className="underline"
+					style={{ color: "inherit" }}
 					href="https://developers.google.com/web/"
 				>
 					developers.google.com/web/
