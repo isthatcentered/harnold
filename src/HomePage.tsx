@@ -126,7 +126,7 @@ export function HomePageView( { onSubmit, onUrlChange, url, className = "", chil
 						 "👌" :
 						 "👈"}
 					</i>
-					<span className="sr-only">Show the repsonsive views of this website</span>
+					<span className="sr-only">Show the repsonsive views for this website</span>
 				</button>
 			</form>
 			

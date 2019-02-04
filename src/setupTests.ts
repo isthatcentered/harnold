@@ -1,6 +1,7 @@
 import { configure, ReactWrapper } from "enzyme"
 import Adapter from "enzyme-adapter-react-16"
 import chalk from "chalk"
+import { cleanup } from "react-testing-library"
 
 
 
@@ -9,6 +10,7 @@ configure( { adapter: new Adapter() } )
 
 setGlobals()
 
+afterEach(cleanup)
 
 declare global
 {
