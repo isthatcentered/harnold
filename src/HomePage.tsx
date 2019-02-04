@@ -48,7 +48,18 @@ export function HomePage( { navigate, location, className = "", ...props }: Home
 		if ( !url.length )
 			return
 		
-		navigate!( `/playground?url=${ url }` )
+		navigate!( `/playground?url=${ normalizeUrl( url ) }` )
+	}
+	
+	
+	function normalizeUrl( url: string ): string
+	{
+		const urlContainsProtocole = () => url.match( /^(http:\/\/|https:\/\/)/ )
+		
+		if ( !urlContainsProtocole() )
+			return `http://${url}`
+		
+		return url
 	}
 	
 	
