@@ -1,6 +1,6 @@
 import * as React from "react"
-import { mount } from "enzyme"
 import { Timeout } from "./Timeout"
+import { customRender } from "./features/viewing-a-website.spec"
 
 
 
@@ -14,14 +14,14 @@ describe( `<Timeout/>`, () => {
 		test( `Passes true after specified duration`, () => {
 			jest.useFakeTimers()
 			
-			const spy     = jest.fn(),
-			      wrapper = mount(
-				      <Timeout duration={duration}>
-					      {done => {
-						      spy( done )
-						      return null
-					      }}
-				      </Timeout> )
+			const spy = jest.fn()
+			
+			customRender( <Timeout duration={duration}>
+				{done => {
+					spy( done )
+					return null
+				}}
+			</Timeout> )
 			
 			expect( spy ).toHaveBeenCalledWith( false )
 			
@@ -33,8 +33,8 @@ describe( `<Timeout/>`, () => {
 	test( `Cancels timeout on unmount`, () => {
 		jest.useFakeTimers()
 		
-		const spy     = jest.fn(),
-		      wrapper = mount(
+		const spy         = jest.fn(),
+		      { unmount } = customRender(
 			      <Timeout duration={2000}>
 				      {done => {
 					      spy( done )
@@ -44,7 +44,7 @@ describe( `<Timeout/>`, () => {
 		
 		expect( spy ).toHaveBeenCalledWith( false )
 		
-		wrapper.unmount()
+		unmount()
 		
 		jest.runAllTimers()
 		
