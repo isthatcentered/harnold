@@ -1,41 +1,17 @@
 import * as React from "react"
-import { ReactElement } from "react"
-import { fireEvent, render } from "react-testing-library"
 import { HomePage } from "./HomePage"
+import { customRender } from "./features/viewing-a-website.spec"
 
 
-
-
-function customRender( component: ReactElement<any> )
-{
-	const utils = render( component )
-	
-	const fill = ( label: RegExp, value: string ) =>
-		fireEvent.change( utils.getByLabelText( label ), { target: { value } } )
-	
-	const click = ( label: RegExp ) =>
-		fireEvent.click( utils.getByText( label ) )
-	
-	const submit = ( label: RegExp ) =>
-		fireEvent.submit( utils.getByText( label ) )
-	
-	
-	return {
-		...utils,
-		fill,
-		click,
-		submit,
-	}
-}
 
 
 function renderHome()
 {
-	const navigate                                                      = jest.fn(),
+	const navigate                                               = jest.fn(),
 	      { container, getByLabelText, getByText, submit, fill } = customRender( <HomePage navigate={navigate}/> ),
-	      submitButton                                                  = getByText( /Show the repsonsive views for this website/i ).parentElement!,
-	      urlInput                                                      = getByLabelText( /url of the website you want to view/i ),
-	      checkpoint                                                    = container.getElementsByClassName( "Checkpoint" )[ 0 ]
+	      submitButton                                           = getByText( /Show the repsonsive views for this website/i ).parentElement!,
+	      urlInput                                               = getByLabelText( /url of the website you want to view/i ),
+	      checkpoint                                             = container.getElementsByClassName( "Checkpoint" )[ 0 ]
 	
 	const typeUrl   = ( value: string ) => fill( /url of the website you want to view/i, value ),
 	      submitUrl = () => submit( /url of the website you want to view/i )
@@ -107,7 +83,7 @@ describe( `HomePage`, () => {
 		
 		test( `Redirects to playground page with url as query param`, () => {
 			const { submitUrl, navigate, typeUrl } = renderHome(),
-			      url                               = "http://entered-url"
+			      url                              = "http://entered-url"
 			
 			typeUrl( url )
 			
@@ -118,7 +94,7 @@ describe( `HomePage`, () => {
 		
 		test( `Url is normalized`, () => {
 			const { submitUrl, typeUrl, navigate } = renderHome(),
-			      url                               = "entered-url"
+			      url                              = "entered-url"
 			
 			typeUrl( url )
 			

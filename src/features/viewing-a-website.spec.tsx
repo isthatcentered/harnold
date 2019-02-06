@@ -1,18 +1,26 @@
-import { ComponentClass, default as React, IframeHTMLAttributes, InputHTMLAttributes, ReactElement, StatelessComponent } from "react"
-import { createHistory, createMemorySource, History, LocationProvider, LocationProviderProps } from "@reach/router"
-import { EnzymePropSelector, mount, ReactWrapper } from "enzyme"
+import { default as React, ReactElement } from "react"
+import { createHistory, createMemorySource, History, LocationProvider } from "@reach/router"
 import { parse } from "query-string"
-import { tick } from "@isthatcentered/tickable"
-import { App, AppProps } from "../App"
-import { device, makeDevice } from "../contracts"
-import { pack } from "@isthatcentered/charlies-factory"
-import { ScalableIframe } from "../ScalableIFrame"
-import { fireEvent, render } from "react-testing-library"
+import { App } from "../App"
+import { makeDevice } from "../contracts"
+import { fireEvent, render, RenderResult } from "react-testing-library"
+import { DeviceInteractor } from "../PlaygroundPage"
 
 
 
 
-function customRender( component: ReactElement<any> )
+export interface customRenderResult extends RenderResult
+{
+	change: ( label: RegExp, value: any ) => void
+	fill: ( label: RegExp, value: string ) => void
+	slide: ( label: RegExp, value: number ) => void
+	click: ( label: RegExp ) => void
+	submit: ( label: RegExp ) => void
+	wrapper: HTMLElement
+}
+
+
+export function customRender( component: ReactElement<any> ): customRenderResult
 {
 	const utils = render( component )
 	
@@ -26,14 +34,14 @@ function customRender( component: ReactElement<any> )
 	const click = ( label: RegExp ) =>
 		fireEvent.click( utils.getByText( label ) )
 	
-	
-	
 	const submit = ( label: RegExp ) =>
 		fireEvent.submit( utils.getByText( label ) )
 	
 	
 	return {
 		...utils,
+		wrapper: utils.container.firstChild as HTMLElement,
+		change,
 		fill,
 		slide,
 		click,
@@ -90,71 +98,56 @@ describe( `Viewing a website`, () => {
 			      url     = "http://url-from-query-param.com/",
 			      utils   = routerRender( `/playground?url=${url}`, <App devices={devices}/> )
 			
+			
+			const devicesInteractors = Array.from( utils.container.getElementsByClassName( DeviceInteractor.selector ) )
+				.map( el => new DeviceInteractor( el as HTMLElement ) )
+			
 			return {
 				...utils,
-				devices,
+				devices: devicesInteractors,
 			}
 		}
 		
 		
 		test( `Every displayed iframe displays the website`, () => {
-			const { query: { url }, devices, getByTitle } = renderPlaygroundPage()
+			const { query: { url }, devices } = renderPlaygroundPage()
 			
-			devices.forEach( ( device: device ) => {
-				const iframe = getByTitle( new RegExp( `${device.label} view`, "i" ) ) as HTMLIFrameElement
-				
-				expect( iframe.src ).toBe( url )
-			} )
+			devices.forEach( ( device: DeviceInteractor ) =>
+				expect( device.url ).toBe( url ) )
 			
 			expect.hasAssertions()
 		} )
 		
 		test( `I can scale the devices`, () => {
-			const newScale                       = 0.4,
-			      { devices, getByTitle, slide } = renderPlaygroundPage()
+			const newScale           = 0.4,
+			      { devices, slide } = renderPlaygroundPage()
 			
 			slide( /scale the devices up or down/i, newScale )
 			
-			devices.forEach( ( device: device ) => {
-				
-				const iframe = getByTitle( new RegExp( `${device.label} view`, "i" ) ) as HTMLIFrameElement,
-				      scaler = iframe.parentElement!
-				
-				expect( scaler.style.transform ).toBe( `scale(${newScale})` )
-			} )
+			devices.forEach( ( device: DeviceInteractor ) =>
+				expect( device.isAtScale( newScale ) ).toBe( true ) )
 			
 			expect.hasAssertions()
 		} )
 		
 		test( `My scale settings are backed up on page refresh`, () => {
-			const oldScale: number = .3,
-			      newScale: number = .5,
-			      storingKey       = "harnold:playground:scale",
-			      firstRender      = renderPlaygroundPage()
+			const firstRender            = renderPlaygroundPage(),
+			      scaleSetOnFirstRender  = 0.4,
+			      scaleSetOnSecondRender = 0.4
 			
-			firstRender.slide( /scale the devices up or down/i, 0.4 )
+			firstRender.slide( /scale the devices up or down/i, scaleSetOnFirstRender )
 			
 			const secondRender = renderPlaygroundPage()
 			
-			secondRender.devices.forEach( ( device: device ) => {
-				
-				const iframe = secondRender.getByTitle( new RegExp( `${device.label} view`, "i" ) ) as HTMLIFrameElement,
-				      scaler = iframe.parentElement!
-				
-				expect( scaler.style.transform ).toBe( `scale(${0.4})` )
-			} )
+			secondRender.devices.forEach( ( device: DeviceInteractor ) =>
+				expect( device.isAtScale( scaleSetOnFirstRender ) ).toBe( true ) )
 			
-			secondRender.slide( /scale the devices up or down/i, 0.7 )
+			secondRender.slide( /scale the devices up or down/i, scaleSetOnSecondRender )
 			
 			const thirdRender = renderPlaygroundPage()
 			
-			thirdRender.devices.forEach( ( device: device ) => {
-				
-				const iframe = thirdRender.getByTitle( new RegExp( `${device.label} view`, "i" ) ) as HTMLIFrameElement,
-				      scaler = iframe.parentElement!
-				
-				expect( scaler.style.transform ).toBe( `scale(${0.7})` )
-			} )
+			thirdRender.devices.forEach( ( device: DeviceInteractor ) =>
+				expect( device.isAtScale( scaleSetOnSecondRender ) ).toBe( true ) )
 		} )
 	} )
 } )

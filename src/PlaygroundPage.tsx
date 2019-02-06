@@ -2,7 +2,7 @@ import { RouteComponentProps } from "@reach/router"
 import { device } from "./contracts"
 import * as React from "react"
 import { HTMLAttributes } from "react"
-import { ScalableIframe } from "./ScalableIFrame"
+import { ScalableIframe, ScalableIFrameInteractor } from "./ScalableIFrame"
 import { ViewScaler } from "./ViewScaler"
 import { Trail } from "react-spring"
 import { easeCubicInOut } from "d3-ease"
@@ -150,4 +150,28 @@ function Device( { label, width, height, src, scale, className, ...props }: Devi
 	</figure>
 }
 
+
+export class DeviceInteractor
+{
+	
+	static selector = `Device`
+	private _scalebleIframe = new ScalableIFrameInteractor( this._component.getElementsByClassName( ScalableIFrameInteractor.selector )[ 0 ] as HTMLElement )
+	
+	
+	constructor( private _component: HTMLElement )
+	{
+	}
+	
+	
+	get url()
+	{
+		return this._scalebleIframe.url
+	}
+	
+	
+	isAtScale( scale: number )
+	{
+		return this._scalebleIframe.isAtScale( scale )
+	}
+}
 

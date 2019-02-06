@@ -44,7 +44,6 @@ export function App( { devices }: AppProps )
 				   href="mailto:e.peninb@gmail.com">Contact</a>
 			</header>
 			
-			
 			<main className="">
 				<Router>
 					

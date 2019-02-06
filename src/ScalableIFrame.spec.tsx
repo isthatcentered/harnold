@@ -1,7 +1,6 @@
 import * as React from "react"
-import { CSSProperties } from "react"
-import { shallow, ShallowWrapper } from "enzyme"
-import { ScalableIframe, ScalableIframeProps } from "./ScalableIFrame"
+import { ScalableIframe, ScalableIFrameInteractor } from "./ScalableIFrame"
+import { customRender } from "./features/viewing-a-website.spec"
 
 
 
@@ -12,7 +11,7 @@ describe( `<ScalableIframe/>`, () => {
 		{
 			width:  345,
 			height: 876,
-			scale:  0.1, // .1 will be turned into 0.1 in css
+			scale:  0.1,
 		},
 		{
 			width:  345,
@@ -25,46 +24,33 @@ describe( `<ScalableIframe/>`, () => {
 			scale:  1.5,
 		},
 	].forEach( spec => {
-		let wrapper: ShallowWrapper<ScalableIframeProps>,
-		    wrapperStyles: CSSProperties
+		let wrapper: ScalableIFrameInteractor
 		
 		beforeEach( () => {
-			wrapper = shallow( <ScalableIframe {...spec} src=""/> )
-			wrapperStyles = wrapper.props().style!
+			wrapper = new ScalableIFrameInteractor( customRender( <ScalableIframe {...spec} src=""/> ).wrapper as HTMLElement )
 		} )
 		
 		describe( `Given {width: ${spec.width} height: ${spec.height} scale: ${spec.scale}}`, () => {
-			
 			test( `Passes desired width and height to iframe element`, () => {
-				const iframe = wrapper.find( "iframe" ).props()
+				expect( wrapper.width ).toBe( spec.width )
 				
-				expect( iframe.width ).toBe( spec.width )
-				
-				expect( iframe.height ).toBe( spec.height )
+				expect( wrapper.height ).toBe( spec.height )
 			} )
 			
-			test( `Visually resizes the iframe`, () => {
-				expect( wrapperStyles.transform ).toBe( `scale(${spec.scale})` )
-			} )
-			
-			test( `Ensures the iframe takes the scaled down/up size in dom`, () => {
-				const scaleWidth   = spec.width * spec.scale,
-				      scaledHeight = spec.height * spec.scale
-				
-				expect( wrapperStyles.width ).toBe( scaleWidth )
-				
-				expect( wrapperStyles.height ).toBe( scaledHeight )
+			test( `Ensures the scaled iframe takes only the scaled width & height in the dom`, () => {
+				expect( wrapper.isAtScale( spec.scale ) ).toBe( true )
 			} )
 		} )
 	} )
 	
 	describe( `Throws if passed value is not a css transform:scale compatible value`, () => {
 		;[
-			-1, 3,
+			-1,
+			3,
 		]
 			.forEach( scale =>
 				test( `Throws for value ${scale}`, () => {
-					expect( () => shallow(
+					expect( () => customRender(
 						<ScalableIframe
 							scale={scale}
 							width={0}

@@ -39,3 +39,64 @@ export const ScalableIframe = ( { scale = 1, width, height, ...props }: Scalable
 		</div>
 	)
 }
+
+export class ScalableIFrameInteractor
+{
+	static selector: string = `ScalableIframe`
+	private _iframe = (this._component.getElementsByTagName( "iframe" )[ 0 ] as HTMLIFrameElement)
+	
+	
+	constructor( private _component: HTMLElement )
+	{
+	}
+	
+	
+	get width(): number
+	{
+		return parseFloat( this._iframe.width )
+	}
+	
+	
+	get height(): number
+	{
+		return parseFloat( this._iframe.height )
+	}
+	
+	
+	private get scale(): number
+	{
+		const scale = this._component.style.transform
+		
+		if ( !scale )
+			throw new Error( `No scale attribute on this device. Has the scale element changed or something ?` )
+		
+		return parseFloat( scale.match( /\((.*?)\)/ )![ 1 ] )
+	}
+	
+	
+	get url(): string
+	{
+		return this._iframe.src
+	}
+	
+	
+	get iframe(): HTMLIFrameElement
+	{
+		return this._iframe
+	}
+
+	isAtScale( scale: number )
+	{
+		const scaledWidth  = this.width * scale,
+		      scaledHeight = this.height * scale
+		
+		const scalerWidth  = parseFloat( this._component.style.width! ),
+		      scalerHeight = parseFloat( this._component.style.height! )
+		
+		const takesScaledWidth   = scalerWidth === scaledWidth,
+		      takesScaledHeight  = scalerHeight === scaledHeight,
+		      hasCorrectCssScale = this.scale === scale
+		
+		return takesScaledWidth && takesScaledHeight && hasCorrectCssScale
+	}
+}
