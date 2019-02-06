@@ -7,33 +7,167 @@ import { App, AppProps } from "../App"
 import { device, makeDevice } from "../contracts"
 import { pack } from "@isthatcentered/charlies-factory"
 import { ScalableIframe } from "../ScalableIFrame"
+import { fireEvent, render } from "react-testing-library"
 
 
 
 
+function customRender( component: ReactElement<any> )
+{
+	const utils = render( component )
+	
+	const change = ( label: RegExp, value: any ) =>
+		fireEvent.change( utils.getByLabelText( label ), { target: { value } } )
+	
+	const fill = ( label: RegExp, value: string ) => change( label, value )
+	
+	const slide = ( label: RegExp, value: number ) => change( label, value )
+	
+	const click = ( label: RegExp ) =>
+		fireEvent.click( utils.getByText( label ) )
+	
+	
+	
+	const submit = ( label: RegExp ) =>
+		fireEvent.submit( utils.getByText( label ) )
+	
+	
+	return {
+		...utils,
+		fill,
+		slide,
+		click,
+		submit,
+	}
+}
+
+
+export function routerRender( url: string, Component: ReactElement<any> )
+{
+	const [ path, query ] = url.split( "?" ),
+	      navigate        = jest.fn()
+	
+	const history: History = {
+		...createHistory( createMemorySource( url ) ),
+		navigate,
+	}
+	
+	history.location.search = query
+	
+	const utils = customRender(
+		<LocationProvider history={history}>
+			{Component}
+		</LocationProvider> )
+	
+	return {
+		...utils,
+		path,
+		query: parse( query ) as any,
+		navigate,
+	}
+}
+
+
+describe( `Viewing a website`, () => {
+	describe( `Onboard through homepage`, () => {
+		test( `User is redirected to playground page when submitting a url`, async () => {
+			const { fill, submit, navigate } = routerRender( "/", <App devices={[ makeDevice() ]}/> ),
+			      url                        = "http://some-user-entered-url.com"
+			
+			fill( /url of the website you want to view/i, url )
+			
+			submit( /url of the website you want to view/i )
+			
+			expect( navigate ).toHaveBeenCalledWith( `/playground?url=${url}`, undefined )
+		} )
+	} )
+	
+	describe( `Playground page`, () => {
+		
+		function renderPlaygroundPage()
+		{
+			const devices = [ makeDevice(), makeDevice() ],
+			      url     = "http://url-from-query-param.com/",
+			      utils   = routerRender( `/playground?url=${url}`, <App devices={devices}/> )
+			
+			return {
+				...utils,
+				devices,
+			}
+		}
+		
+		
+		test( `Every displayed iframe displays the website`, () => {
+			const { query: { url }, devices, getByTitle } = renderPlaygroundPage()
+			
+			devices.forEach( ( device: device ) => {
+				const iframe = getByTitle( new RegExp( `${device.label} view`, "i" ) ) as HTMLIFrameElement
+				
+				expect( iframe.src ).toBe( url )
+			} )
+			
+			expect.hasAssertions()
+		} )
+		
+		test( `I can scale the devices`, () => {
+			const newScale                       = 0.4,
+			      { devices, getByTitle, slide } = renderPlaygroundPage()
+			
+			slide( /scale the devices up or down/i, newScale )
+			
+			devices.forEach( ( device: device ) => {
+				
+				const iframe = getByTitle( new RegExp( `${device.label} view`, "i" ) ) as HTMLIFrameElement,
+				      scaler = iframe.parentElement!
+				
+				expect( scaler.style.transform ).toBe( `scale(${newScale})` )
+			} )
+			
+			expect.hasAssertions()
+		} )
+		
+		test( `My scale settings are backed up on page refresh`, () => {
+			const oldScale: number = .3,
+			      newScale: number = .5,
+			      storingKey       = "harnold:playground:scale",
+			      firstRender      = renderPlaygroundPage()
+			
+			firstRender.slide( /scale the devices up or down/i, 0.4 )
+			
+			const secondRender = renderPlaygroundPage()
+			
+			secondRender.devices.forEach( ( device: device ) => {
+				
+				const iframe = secondRender.getByTitle( new RegExp( `${device.label} view`, "i" ) ) as HTMLIFrameElement,
+				      scaler = iframe.parentElement!
+				
+				expect( scaler.style.transform ).toBe( `scale(${0.4})` )
+			} )
+			
+			secondRender.slide( /scale the devices up or down/i, 0.7 )
+			
+			const thirdRender = renderPlaygroundPage()
+			
+			thirdRender.devices.forEach( ( device: device ) => {
+				
+				const iframe = thirdRender.getByTitle( new RegExp( `${device.label} view`, "i" ) ) as HTMLIFrameElement,
+				      scaler = iframe.parentElement!
+				
+				expect( scaler.style.transform ).toBe( `scale(${0.7})` )
+			} )
+		} )
+	} )
+} )
+
+
+
+// ENZYME --------------------------------------------------------
+/*
 const makeApp = makeMakeRoutableComponent<AppProps>( App, {
 		devices: pack( 3, () => makeDevice() ),
 	},
 )
 
-describe( `Specifying a website to view`, () => {
-	test( `No sumbmit on empty`, () => {
-		const { wrapper, navigate } = makeApp( "/" )
-		
-		submit( fill( /url of the website you want to view/i, "", wrapper ) )
-		
-		expect( navigate ).not.toHaveBeenCalled()
-	} )
-	
-	test( `Redirected successfully to playground page`, () => {
-		const { wrapper, navigate } = makeApp( "/" ),
-		      url                   = "SOME_WEBSITE.com"
-		
-		submit( fill( /url of the website you want to view/i, url, wrapper ) )
-		
-		expect( navigate ).toHaveBeenCalledWith( `/playground?url=${url}`, undefined )
-	} )
-} )
 
 describe( `No website given in query`, () => {
 	test( `User is redirected to home`, async () => {
@@ -72,8 +206,8 @@ describe( `"url" given in query`, () => {
 
 describe( `Scaling the view`, () => {
 	test( `Modifying the "view scale" scales the devices`, () => {
-		const { wrapper, navigate, query } = makeApp( "/playground?url=URL_FROM_QUERY.com" ),
-		      newScale: number             = .4
+		const { wrapper }      = makeApp( "/playground?url=URL_FROM_QUERY.com" ),
+		      newScale: number = .4
 		
 		change( /scale the devices up or down/i, newScale, wrapper )
 		
@@ -89,7 +223,7 @@ describe( `Scaling the view`, () => {
 		
 		window.localStorage.setItem( storingKey, oldScale.toString() )
 		
-		const { wrapper, navigate, query } = makeApp( "/playground?url=URL_FROM_QUERY.com" )
+		const { wrapper } = makeApp( "/playground?url=URL_FROM_QUERY.com" )
 		
 		expectDisplayedDevicesToBeAtScale( oldScale, wrapper )
 		
@@ -271,4 +405,4 @@ function submit( target: ReactWrapper<any> ): void
 		throw new Error( `You provided no "onSubmit" prop for the form you are trying to submit. I think you probably meant to though 🙄` )
 	
 	form.simulate( "submit" )
-}
+}*/
